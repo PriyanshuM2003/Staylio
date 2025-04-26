@@ -197,9 +197,9 @@ export default function FilterBar() {
             </div>
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-[520px] p-0 rounded-3xl" align="start">
+        <PopoverContent className="w-max p-0 rounded-3xl" align="start">
           <Calendar
-            mode="multiple"
+            mode="single"
             selected={date}
             onSelect={setDate}
             className="rounded-md border"
@@ -231,9 +231,9 @@ export default function FilterBar() {
             </div>
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-[520px] p-0 rounded-3xl" align="start">
+        <PopoverContent className="w-max p-0 rounded-3xl" align="start">
           <Calendar
-            mode="multiple"
+            mode="single"
             selected={date}
             onSelect={setDate}
             className="rounded-md border"

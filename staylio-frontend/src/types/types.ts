@@ -4,8 +4,8 @@ export type TWhere = {
   description?: string;
 };
 export type Property = {
+  id: string;
   location: string;
-  distance: string;
   dates: string;
   price: string;
   nights: number;

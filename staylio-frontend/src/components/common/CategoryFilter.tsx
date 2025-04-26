@@ -37,12 +37,12 @@ export default function CategoryFilter() {
   ];
 
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex items-center gap-6 justify-center">
       {categories.map((category) => (
         <Button
           key={category.id}
           variant="ghost"
-          className={`flex flex-col items-center gap-1 h-auto py-2 px-4 ${
+          className={`flex flex-col items-center cursor-pointer gap-1 h-auto py-2 px-4 ${
             activeCategory === category.id
               ? "border-b-2 border-black text-black"
               : "text-muted-foreground"

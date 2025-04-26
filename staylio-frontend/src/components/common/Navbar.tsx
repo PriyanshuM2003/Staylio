@@ -11,7 +11,7 @@ import { User } from "lucide-react";
 
 const Navbar = () => {
   return (
-    <div className="flex items-center z-50 sticky top-0 border-b p-6 justify-between">
+    <div className="flex items-center bg-white z-50 gap-6 sticky top-0 border-b p-6 justify-between">
       <h1 className="text-2xl font-bold text-red-500">Staylio</h1>
       <FilterBar />
       <DropdownMenu>
