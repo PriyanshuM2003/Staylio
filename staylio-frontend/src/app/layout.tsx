@@ -4,6 +4,7 @@ import "./globals.css";
 import { Provider } from "jotai";
 import QueryProvider from "./QueryProvider";
 import Navbar from "@/components/common/Navbar";
+import Footer from "@/components/common/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,12 +29,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full max-w-[96rem] mx-auto bg-white`}
       >
         <Provider>
           <QueryProvider>
             <Navbar />
-            {children}
+            <div className="min-h-screen p-4 md:p-6">{children}</div>
+            <Footer />
           </QueryProvider>
         </Provider>
       </body>
