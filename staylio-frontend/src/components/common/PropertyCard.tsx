@@ -1,7 +1,7 @@
 "use client";
 import { Heart, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Property } from "@/types/types";
+import { TProperty } from "@/types/types";
 import { cn } from "@/lib/utils";
 import {
   Carousel,
@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export default function PropertyCard({ data }: { data: Property }) {
+export default function PropertyCard({ data }: { data: TProperty }) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
@@ -89,7 +89,7 @@ export default function PropertyCard({ data }: { data: Property }) {
           </div>
           <p className="text-muted-foreground text-sm">{data.dates}</p>
           <p className="font-semibold">
-            {data.price}{" "}
+          ₹{data.price}{" "}
             <span className="font-normal">per night</span>
           </p>
         </div>
@@ -97,3 +97,4 @@ export default function PropertyCard({ data }: { data: Property }) {
     </Card>
   );
 }
+

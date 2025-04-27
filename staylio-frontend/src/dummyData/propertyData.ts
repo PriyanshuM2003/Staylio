@@ -1,11 +1,11 @@
-import { Property } from "@/types/types";
+import { TProperty } from "@/types/types";
 
-export const propertyData: Property[] = [
+export const propertyData: TProperty[] = [
   {
     id: "1",
     location: "Jalandhar, India",
     dates: "1-6 May",
-    price: "₹148,353",
+    price: 148353,
     nights: 5,
     isFavorite: true,
     rating: 5,
@@ -19,7 +19,7 @@ export const propertyData: Property[] = [
     id: "3",
     location: "Udaipur, India",
     dates: "1-6 May",
-    price: "₹79,800",
+    price: 79800,
     nights: 5,
     isFavorite: false,
     rating: 5.0,
@@ -33,7 +33,7 @@ export const propertyData: Property[] = [
     id: "2",
     location: "Jaipur, India",
     dates: "17-22 May",
-    price: "₹125,000",
+    price: 125000,
     nights: 5,
     isFavorite: false,
     rating: null,
