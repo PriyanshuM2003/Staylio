@@ -25,3 +25,11 @@ export type TReservation = {
   numberOfGuests: number;
   totalPrice: number;
 };
+
+export type TInbox = {
+  id: string;
+  name: string;
+  date: string;
+  teaser: string;
+  isRead?: boolean;
+};

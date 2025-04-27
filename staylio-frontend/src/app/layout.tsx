@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full max-w-[96rem] mx-auto bg-white`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full max-w-[96rem] overflow-x-hidden mx-auto bg-white`}
       >
         <Provider>
           <QueryProvider>
