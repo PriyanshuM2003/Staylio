@@ -14,10 +14,13 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function PropertyCard({ data }: { data: TProperty }) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  const pathName = usePathname();
+  const isMyProperties = pathName.includes("my-properties");
 
   useEffect(() => {
     if (!api) {
@@ -69,7 +72,8 @@ export default function PropertyCard({ data }: { data: TProperty }) {
           <Heart
             className={cn(
               "h-5 w-5 cursor-pointer absolute top-2 right-2 z-30 transition-all",
-              data.isFavorite ? "fill-red-500 stroke-white" : "stroke-white"
+              data.isFavorite ? "fill-red-500 stroke-white" : "stroke-white",
+              isMyProperties && "hidden"
             )}
           />
         </div>
@@ -89,12 +93,10 @@ export default function PropertyCard({ data }: { data: TProperty }) {
           </div>
           <p className="text-muted-foreground text-sm">{data.dates}</p>
           <p className="font-semibold">
-          ₹{data.price}{" "}
-            <span className="font-normal">per night</span>
+            ₹{data.price} <span className="font-normal">per night</span>
           </p>
         </div>
       </CardContent>
     </Card>
   );
 }
-
