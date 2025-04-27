@@ -5,6 +5,7 @@ import { Provider } from "jotai";
 import QueryProvider from "./QueryProvider";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
             <Navbar />
             <div className="min-h-screen p-4 md:p-6">{children}</div>
             <Footer />
+            <Toaster />
           </QueryProvider>
         </Provider>
       </body>
