@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import type React from "react";
+
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,11 +15,11 @@ import { cn } from "@/lib/utils";
 import { whereData } from "@/dummyData/whereData";
 import { Calendar } from "@/components/ui/calendar";
 
+type PopoverType = "where" | "checkin" | "checkout" | "who" | null;
+
 export default function FilterBar() {
   // Track which popover is currently open
-  const [activePopover, setActivePopover] = useState<
-    "where" | "checkin" | "checkout" | "who" | null
-  >(null);
+  const [activePopover, setActivePopover] = useState<PopoverType>(null);
 
   // References to popover triggers for programmatic focus
   const whereRef = useRef<HTMLButtonElement>(null);
@@ -25,12 +27,16 @@ export default function FilterBar() {
   const checkOutRef = useRef<HTMLButtonElement>(null);
   const whoRef = useRef<HTMLButtonElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
   // Search state
   const [searchInput, setSearchInput] = useState("");
 
-  const filteredResults = whereData.filter((result) =>
-    result.name.toLowerCase().includes(searchInput.toLowerCase())
-  );
+  // Memoize filtered results to prevent recalculation on every render
+  const filteredResults = useCallback(() => {
+    return whereData.filter((result) =>
+      result.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+  }, [searchInput]);
 
   // Date selection state
   const [selectedDates, setSelectedDates] = useState<{
@@ -51,14 +57,75 @@ export default function FilterBar() {
     pets: 0,
   });
 
-  const handleInputClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
+  // Calculate total guests once
+  const totalGuests = guests.adults + guests.children;
+
+  // Handle popover state changes - memoized to prevent recreation on each render
+  const handlePopoverChange = useCallback(
+    (popover: PopoverType, isOpen: boolean) => {
+      // Only allow manual opening or programmatic changes
+      // Prevent automatic closing when interacting with popover content
+      if (isOpen) {
+        setActivePopover(popover);
+      } else if (activePopover === popover) {
+        // Don't close automatically - we'll control this programmatically
+        // This prevents the popover from closing when selecting an item
+        setActivePopover(null)
+      }
+    },
+    [activePopover]
+  );
+
+  // Handle location selection - memoized
+  const handleLocationSelect = useCallback((location: string) => {
+    setSearchInput(location);
+    // Move to check-in after selecting location
+    setTimeout(() => {
+      setActivePopover("checkin");
+    }, 10);
+  }, []);
+
+  // Handle guest change - memoized
+  const handleGuestChange = useCallback(
+    (type: keyof typeof guests, increment: boolean) => {
+      setGuests((prev) => ({
+        ...prev,
+        [type]: increment ? prev[type] + 1 : Math.max(0, prev[type] - 1),
+      }));
+    },
+    []
+  );
+
+  // Handle date selection
+  const handleDateSelect = useCallback(
+    (newDate: Date | undefined) => {
+      if (!newDate) return;
+
+      setDate(newDate);
+
+      if (!selectedDates.checkIn) {
+        setSelectedDates((prev) => ({ ...prev, checkIn: newDate }));
+        // Move to checkout after selecting check-in date
+        setTimeout(() => {
+          setActivePopover("checkout");
+        }, 100);
+      } else if (!selectedDates.checkOut) {
+        // Only set checkout if it's after check-in
+        if (selectedDates.checkIn && newDate > selectedDates.checkIn) {
+          setSelectedDates((prev) => ({ ...prev, checkOut: newDate }));
+          // Move to who after selecting check-out date
+          setTimeout(() => {
+            setActivePopover("who");
+          }, 100);
+        }
+      }
+    },
+    [selectedDates]
+  );
 
   // Effect to focus on the search input when the Where popover opens
   useEffect(() => {
     if (activePopover === "where" && searchInputRef.current) {
-      // Small delay to ensure the popover is fully open
       const timeoutId = setTimeout(() => {
         searchInputRef.current?.focus();
       }, 10);
@@ -66,47 +133,56 @@ export default function FilterBar() {
     }
   }, [activePopover]);
 
-  const handleGuestChange = (type: keyof typeof guests, increment: boolean) => {
-    setGuests((prev) => ({
-      ...prev,
-      [type]: increment ? prev[type] + 1 : Math.max(0, prev[type] - 1),
-    }));
-  };
+  // Clear search input
+  const clearSearch = useCallback(() => setSearchInput(""), []);
 
-  const totalGuests = guests.adults + guests.children;
+  // Handle input click to prevent popover from closing
+  const handleInputClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
 
-  // Handle popover state changes
-  const handlePopoverChange = (
-    popover: typeof activePopover,
-    isOpen: boolean
-  ) => {
-    if (isOpen) {
-      setActivePopover(popover);
-    } else if (activePopover === popover) {
-      setActivePopover(null);
-    }
-  };
+  // Format date for display
+  const formatDate = useCallback((date: Date | null) => {
+    if (!date) return "Add dates";
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  }, []);
 
-  // Handle location selection
-  const handleLocationSelect = (location: string) => {
-    setSearchInput(location);
-    // Move to check-in after selecting location
-    setActivePopover("checkin");
-    checkInRef.current?.click();
-  };
+  const closePopover = useCallback(() => {
+    setActivePopover(null);
+  }, []);
+
+  const handleSearch = useCallback(() => {
+    // Close all popovers
+    closePopover();
+    // Implement search functionality here
+    console.log("Searching for:", {
+      location: searchInput,
+      checkIn: selectedDates.checkIn,
+      checkOut: selectedDates.checkOut,
+      guests,
+    });
+  }, [searchInput, selectedDates, guests, closePopover]);
+
+  const results = filteredResults();
 
   return (
-    <div className="flex items-center border gap-2 bg-gray-100 rounded-full shadow-sm divide-x hover:shadow-md">
+    <div className="flex items-center border gap-2 bg-gray-100 rounded-full shadow-sm divide-x hover:shadow-md transition-shadow duration-200">
       {/* Where Section */}
       <Popover
         open={activePopover === "where"}
         onOpenChange={(open) => handlePopoverChange("where", open)}
       >
-        <PopoverTrigger asChild className="cursor-pointer hover:bg-white">
+        <PopoverTrigger
+          asChild
+          className="cursor-pointer hover:bg-white transition-colors duration-200"
+        >
           <button
             ref={whereRef}
             className={cn(
-              "px-6 py-2 text-left border-none rounded-full focus:outline-none",
+              "px-6 py-2 text-left border-none rounded-full focus:outline-none transition-all duration-200",
               activePopover === "where" ? "bg-white shadow" : "bg-gray-100"
             )}
           >
@@ -126,15 +202,15 @@ export default function FilterBar() {
                   }
                 }}
               />
-              <button
-                className={cn(
-                  "hover:bg-gray-300 cursor-pointer rounded-full p-0.5",
-                  !searchInput && "hidden"
-                )}
-                onClick={() => setSearchInput("")}
-              >
-                <X size={16} className="z-50" />
-              </button>
+              {searchInput && (
+                <button
+                  className="hover:bg-gray-300 cursor-pointer rounded-full p-0.5 transition-colors"
+                  onClick={clearSearch}
+                  aria-label="Clear search"
+                >
+                  <X size={16} className="z-50" />
+                </button>
+              )}
             </div>
           </button>
         </PopoverTrigger>
@@ -143,16 +219,16 @@ export default function FilterBar() {
           align="start"
         >
           <div className="space-y-4">
-            <h3 className={cn("font-medium", searchInput && "hidden")}>
-              Suggested destinations
-            </h3>
+            {!searchInput && (
+              <h3 className="font-medium">Suggested destinations</h3>
+            )}
             <div className="grid gap-2">
-              {filteredResults.length > 0 ? (
-                filteredResults.map((result) => (
+              {results.length > 0 ? (
+                results.map((result) => (
                   <Button
                     key={result.id}
                     variant="ghost"
-                    className="justify-start h-auto py-2"
+                    className="justify-start h-auto py-2 hover:bg-gray-100 transition-colors"
                     onClick={() => handleLocationSelect(result.name)}
                   >
                     <div className="text-left">
@@ -178,22 +254,20 @@ export default function FilterBar() {
         open={activePopover === "checkin"}
         onOpenChange={(open) => handlePopoverChange("checkin", open)}
       >
-        <PopoverTrigger asChild className="cursor-pointer hover:bg-white">
+        <PopoverTrigger
+          asChild
+          className="cursor-pointer hover:bg-white transition-colors duration-200"
+        >
           <button
             ref={checkInRef}
             className={cn(
-              "px-6 py-2 text-left rounded-full border-none focus:outline-none",
+              "px-6 py-2 text-left rounded-full border-none focus:outline-none transition-all duration-200",
               activePopover === "checkin" ? "bg-white shadow" : "bg-gray-100"
             )}
           >
             <div className="text-sm font-medium">Check in</div>
             <div className="text-sm text-muted-foreground">
-              {selectedDates.checkIn
-                ? selectedDates.checkIn.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })
-                : "Add dates"}
+              {formatDate(selectedDates.checkIn)}
             </div>
           </button>
         </PopoverTrigger>
@@ -201,8 +275,11 @@ export default function FilterBar() {
           <Calendar
             mode="single"
             selected={date}
-            onSelect={setDate}
+            onSelect={handleDateSelect}
             className="rounded-md border"
+            disabled={(date) =>
+              date < new Date(new Date().setHours(0, 0, 0, 0))
+            }
           />
         </PopoverContent>
       </Popover>
@@ -212,22 +289,20 @@ export default function FilterBar() {
         open={activePopover === "checkout"}
         onOpenChange={(open) => handlePopoverChange("checkout", open)}
       >
-        <PopoverTrigger asChild className="cursor-pointer hover:bg-white">
+        <PopoverTrigger
+          asChild
+          className="cursor-pointer hover:bg-white transition-colors duration-200"
+        >
           <button
             ref={checkOutRef}
             className={cn(
-              "px-6 py-2 rounded-full text-left focus:outline-none",
+              "px-6 py-2 rounded-full text-left focus:outline-none transition-all duration-200",
               activePopover === "checkout" ? "bg-white shadow" : "bg-gray-100"
             )}
           >
             <div className="text-sm font-medium">Check out</div>
             <div className="text-sm text-muted-foreground">
-              {selectedDates.checkOut
-                ? selectedDates.checkOut.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })
-                : "Add dates"}
+              {formatDate(selectedDates.checkOut)}
             </div>
           </button>
         </PopoverTrigger>
@@ -235,8 +310,12 @@ export default function FilterBar() {
           <Calendar
             mode="single"
             selected={date}
-            onSelect={setDate}
+            onSelect={handleDateSelect}
             className="rounded-md border"
+            disabled={(date) =>
+              date < new Date(new Date().setHours(0, 0, 0, 0)) ||
+              (selectedDates.checkIn ? date <= selectedDates.checkIn : false)
+            }
           />
         </PopoverContent>
       </Popover>
@@ -246,10 +325,13 @@ export default function FilterBar() {
         open={activePopover === "who"}
         onOpenChange={(open) => handlePopoverChange("who", open)}
       >
-        <PopoverTrigger asChild className="cursor-pointer hover:bg-white">
+        <PopoverTrigger
+          asChild
+          className="cursor-pointer hover:bg-white transition-colors duration-200"
+        >
           <div
             className={cn(
-              "pl-6 pr-3 py-2 flex items-center gap-8 justify-between rounded-full text-left focus:outline-none",
+              "pl-6 pr-3 py-2 flex items-center gap-8 justify-between rounded-full text-left focus:outline-none transition-all duration-200",
               activePopover === "who" ? "bg-white shadow" : "bg-gray-100"
             )}
           >
@@ -265,6 +347,8 @@ export default function FilterBar() {
               size="icon"
               variant="destructive"
               className="rounded-full z-50 cursor-pointer"
+              aria-label="Search"
+              onClick={handleSearch}
             >
               <Search className="h-4 w-4" />
             </Button>
@@ -272,88 +356,30 @@ export default function FilterBar() {
         </PopoverTrigger>
         <PopoverContent className="w-[350px] p-4 rounded-3xl" align="start">
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium">Adults</h3>
-                <p className="text-sm text-muted-foreground">
-                  Ages 13 or above
-                </p>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full h-8 w-8"
-                  onClick={() => handleGuestChange("adults", false)}
-                  disabled={guests.adults === 0}
-                >
-                  -
-                </Button>
-                <span className="w-5 text-center">{guests.adults}</span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full h-8 w-8"
-                  onClick={() => handleGuestChange("adults", true)}
-                >
-                  +
-                </Button>
-              </div>
-            </div>
+            {/* Guest Counter Component - extracted for each guest type */}
+            <GuestCounter
+              title="Adults"
+              description="Ages 13 or above"
+              count={guests.adults}
+              onDecrement={() => handleGuestChange("adults", false)}
+              onIncrement={() => handleGuestChange("adults", true)}
+            />
 
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium">Children</h3>
-                <p className="text-sm text-muted-foreground">Ages 2–12</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full h-8 w-8"
-                  onClick={() => handleGuestChange("children", false)}
-                  disabled={guests.children === 0}
-                >
-                  -
-                </Button>
-                <span className="w-5 text-center">{guests.children}</span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full h-8 w-8"
-                  onClick={() => handleGuestChange("children", true)}
-                >
-                  +
-                </Button>
-              </div>
-            </div>
+            <GuestCounter
+              title="Children"
+              description="Ages 2–12"
+              count={guests.children}
+              onDecrement={() => handleGuestChange("children", false)}
+              onIncrement={() => handleGuestChange("children", true)}
+            />
 
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium">Infants</h3>
-                <p className="text-sm text-muted-foreground">Under 2</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full h-8 w-8"
-                  onClick={() => handleGuestChange("infants", false)}
-                  disabled={guests.infants === 0}
-                >
-                  -
-                </Button>
-                <span className="w-5 text-center">{guests.infants}</span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full h-8 w-8"
-                  onClick={() => handleGuestChange("infants", true)}
-                >
-                  +
-                </Button>
-              </div>
-            </div>
+            <GuestCounter
+              title="Infants"
+              description="Under 2"
+              count={guests.infants}
+              onDecrement={() => handleGuestChange("infants", false)}
+              onIncrement={() => handleGuestChange("infants", true)}
+            />
 
             <div className="flex items-center justify-between">
               <div>
@@ -369,6 +395,7 @@ export default function FilterBar() {
                   className="rounded-full h-8 w-8"
                   onClick={() => handleGuestChange("pets", false)}
                   disabled={guests.pets === 0}
+                  aria-label="Decrease pets"
                 >
                   -
                 </Button>
@@ -378,6 +405,7 @@ export default function FilterBar() {
                   size="icon"
                   className="rounded-full h-8 w-8"
                   onClick={() => handleGuestChange("pets", true)}
+                  aria-label="Increase pets"
                 >
                   +
                 </Button>
@@ -386,8 +414,54 @@ export default function FilterBar() {
           </div>
         </PopoverContent>
       </Popover>
+    </div>
+  );
+}
 
-      {/* Search Button */}
+// Extracted reusable component for guest counters
+interface GuestCounterProps {
+  title: string;
+  description: string;
+  count: number;
+  onDecrement: () => void;
+  onIncrement: () => void;
+}
+
+function GuestCounter({
+  title,
+  description,
+  count,
+  onDecrement,
+  onIncrement,
+}: GuestCounterProps) {
+  return (
+    <div className="flex items-center justify-between">
+      <div>
+        <h3 className="font-medium">{title}</h3>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </div>
+      <div className="flex items-center gap-3">
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-full h-8 w-8"
+          onClick={onDecrement}
+          disabled={count === 0}
+          aria-label={`Decrease ${title.toLowerCase()}`}
+        >
+          -
+        </Button>
+        <span className="w-5 text-center">{count}</span>
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-full h-8 w-8"
+          onClick={onIncrement}
+          aria-label={`Increase ${title.toLowerCase()}`}
+        >
+          +
+        </Button>
+      </div>
     </div>
   );
 }

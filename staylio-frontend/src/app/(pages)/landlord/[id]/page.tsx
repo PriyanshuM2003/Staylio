@@ -1,10 +1,10 @@
 import React from "react";
-import Property from "@/components/pages/Property";
+import Landlord from "@/components/pages/Landlord";
 
 const page = () => {
   return (
     <div>
-      <Property />
+      <Landlord />
     </div>
   );
 };

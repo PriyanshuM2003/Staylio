@@ -1,10 +1,10 @@
 import React from "react";
-import Property from "@/components/pages/Property";
+import MyReservations from "@/components/pages/MyReservations";
 
 const page = () => {
   return (
     <div>
-      <Property />
+      <MyReservations />
     </div>
   );
 };

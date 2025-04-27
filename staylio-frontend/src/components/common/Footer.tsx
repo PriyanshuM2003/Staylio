@@ -72,7 +72,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="text-gray-600 body-font">
+    <footer className="text-gray-600 bg-gray-100 body-font">
       <div className="container px-5 py-24 mx-auto flex flex-wrap md:flex-nowrap flex-col md:flex-row">
         {/* Logo Section */}
         <div className="w-64 flex-shrink-0 mx-auto md:mx-0 text-center md:text-left">

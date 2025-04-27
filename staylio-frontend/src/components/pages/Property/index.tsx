@@ -21,6 +21,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import Link from "next/link";
+import DescriptionDialog from "./DescriptionDialog";
+import PlaceOffersDialog from "./PlaceOffersDialog";
 
 const images = [
   "https://images.unsplash.com/photo-1589419896452-b460b8b390a3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -31,7 +34,8 @@ const images = [
 const Property = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-
+  const [openDescriptionDialog, setOpenDescriptionDialog] = useState(false);
+  const [openPlaceOffersDialog, setOpenPlaceOffersDialog] = useState(false);
   // Track which popover is currently open
   const [activePopover, setActivePopover] = useState<
     "guests" | "checkin" | "checkout" | null
@@ -150,7 +154,7 @@ const Property = () => {
           />
         </div>
         <div className="w-full col-span-3 space-y-4">
-          <div className="flex items-center gap-2">
+          <Link href={"/landlord/1"} className="flex items-center gap-2">
             <Avatar className="h-10 w-10">
               <AvatarImage src="https://github.com/shadcn.png" alt="Host" />
               <AvatarFallback>JD</AvatarFallback>
@@ -158,7 +162,7 @@ const Property = () => {
             <h2 className="text-base title-font font-medium">
               Hosted by Kanupriya
             </h2>
-          </div>
+          </Link>
           <div className="space-y-1">
             <h1 className="text-3xl title-font font-medium">
               Sunset Wooded Attic Suite in Chalet style Cottage
@@ -197,14 +201,26 @@ const Property = () => {
             </div>
           </div>
 
-          <p className="leading-relaxed">
+          <p className="leading-relaxed line-clamp-4">
             Fam locavore kickstarter distillery. Mixtape chillwave tumeric
             sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo
             juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
             seitan poutine tumeric. Gastropub blue bottle austin listicle
-            pour-over, neutra jean shorts keytar banjo tattooed umami cardigan{" "}
-            <span className="underline font-medium flex cursor-pointer items-center">
-              Show More <ChevronRight size={18} className="shrink-0" />
+            pour-over, neutra jean shorts keytar banjo tattooed umami cardigan
+            <span className="flex items-center gap-4">
+              <button
+                className="underline flex font-medium cursor-pointer items-center"
+                onClick={() => setOpenDescriptionDialog(true)}
+              >
+                Show More <ChevronRight size={18} className="shrink-0" />
+              </button>
+              <button
+                className="underline flex font-medium cursor-pointer items-center"
+                onClick={() => setOpenPlaceOffersDialog(true)}
+              >
+                What this place offers
+                <ChevronRight size={18} className="shrink-0" />
+              </button>
             </span>
           </p>
           <Separator className="my-4" />
@@ -614,6 +630,18 @@ const Property = () => {
           </div>
         </div>
       </div>
+      {openDescriptionDialog && (
+        <DescriptionDialog
+          openDescriptionDialog={openDescriptionDialog}
+          setOpenDescriptionDialog={setOpenDescriptionDialog}
+        />
+      )}
+      {openPlaceOffersDialog && (
+        <PlaceOffersDialog
+          openPlaceOffersDialog={openPlaceOffersDialog}
+          setOpenPlaceOffersDialog={setOpenPlaceOffersDialog}
+        />
+      )}
     </div>
   );
 };
