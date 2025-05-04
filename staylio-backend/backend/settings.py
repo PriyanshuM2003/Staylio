@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "property",
     "user",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
