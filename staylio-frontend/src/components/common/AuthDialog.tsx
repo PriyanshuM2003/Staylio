@@ -23,6 +23,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { useSignup } from "@/services/apiHooks";
+import { SignupPayload } from "@/types/payloads";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -33,6 +35,7 @@ const loginSchema = z.object({
 
 const signupSchema = z
   .object({
+    name: z.string().min(1, { message: "Username is required" }),
     email: z.string().email({ message: "Please enter a valid email address" }),
     password: z
       .string()
@@ -59,6 +62,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
   authType,
   setAuthType,
 }) => {
+  const signup = useSignup();
   const formSchema = authType === "login" ? loginSchema : signupSchema;
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -66,7 +70,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
     defaultValues: {
       email: "",
       password: "",
-      ...(authType === "signup" ? { confirmPassword: "" } : {}),
+      ...(authType === "signup" ? { confirmPassword: "", name: "" } : {}),
     },
   });
 
@@ -75,11 +79,20 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
       console.log("Login submission:", values);
       toast.success("Logged in successfully!");
     } else {
-      console.log("Signup submission:", values);
-      toast.success("Account created successfully!");
+      signup.mutate(values as SignupPayload, {
+        onSuccess: () => {
+          toast.success("Account created successfully!");
+          setOpenAuthDialog(false);
+        },
+        // eslint-disable-next-line
+        onError: (error: any) => {
+          const message =
+            error?.response?.data?.message ||
+            "Signup failed. Please try again.";
+          toast.error(message);
+        },
+      });
     }
-
-    setOpenAuthDialog(false);
   }
 
   return (
@@ -98,6 +111,21 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {authType === "signup" && (
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="email"

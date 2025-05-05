@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserM
 from django.db import models
 
 
-class CustomUserManger(UserManager):
+class CustomUserManager(UserManager):
     def _create_user(self, name, email, password, **extra_fields):
         if not email:
             raise ValueError("You have not specified a valid e-mail address")
@@ -31,7 +31,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255, blank=True, null=True)
-    avatar = models.ImageField(upload_to="upload/avatars")
+    avatar = models.ImageField(upload_to="uploads/avatars")
 
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
@@ -40,7 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(blank=True, null=True)
 
-    objects = CustomUserManger()
+    objects = CustomUserManager()
 
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"

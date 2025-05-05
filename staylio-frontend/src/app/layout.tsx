@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Provider } from "jotai";
 import QueryProvider from "./QueryProvider";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
@@ -35,14 +34,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full max-w-[96rem] overflow-x-hidden mx-auto bg-white`}
       >
-        <Provider>
-          <QueryProvider>
-            <Navbar />
-            <div className="min-h-screen p-4 md:p-6">{children}</div>
-            <Footer />
-            <Toaster />
-          </QueryProvider>
-        </Provider>
+        {/* <></> */}
+        <QueryProvider>
+          <Navbar />
+          <div className="min-h-screen p-4 md:p-6">{children}</div>
+          <Footer />
+          <Toaster />
+        </QueryProvider>
       </body>
     </html>
   );
