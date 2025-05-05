@@ -1,5 +1,5 @@
 "use client";
-import { Heart, Star } from "lucide-react";
+import { Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { TProperty } from "@/types/types";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function PropertyCard({ data }: { data: TProperty }) {
+interface PropertyCardProps {
+  data: TProperty;
+  isMyProperties?: boolean;
+}
+
+export default function PropertyCard({ data }: PropertyCardProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const pathName = usePathname();
@@ -41,12 +46,12 @@ export default function PropertyCard({ data }: { data: TProperty }) {
         <div className="relative aspect-square rounded-xl overflow-hidden">
           <Carousel setApi={setApi}>
             <CarouselContent>
-              {data.images.map((image, index) => (
-                <CarouselItem key={index}>
+              {data?.images?.map((image) => (
+                <CarouselItem key={image.image}>
                   <div className="relative aspect-square">
                     <Image
-                      src={image}
-                      alt={data.location}
+                      src={image.image}
+                      alt={data.title}
                       fill
                       className="object-cover"
                     />
@@ -58,7 +63,7 @@ export default function PropertyCard({ data }: { data: TProperty }) {
             <CarouselNext className="z-20 absolute right-2 cursor-pointer" />
           </Carousel>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-30">
-            {data.images.map((_, index) => (
+            {data?.images?.map((_, index) => (
               <div
                 key={index}
                 className={cn(
@@ -72,7 +77,8 @@ export default function PropertyCard({ data }: { data: TProperty }) {
           <Heart
             className={cn(
               "h-5 w-5 cursor-pointer absolute top-2 right-2 z-30 transition-all",
-              data.isFavorite ? "fill-red-500 stroke-white" : "stroke-white",
+              // data.isFavorite ? "fill-red-500 stroke-white" : "stroke-white",
+              "stroke-white",
               isMyProperties && "hidden"
             )}
           />
@@ -80,8 +86,8 @@ export default function PropertyCard({ data }: { data: TProperty }) {
 
         <div className="space-y-1 pt-2">
           <div className="flex justify-between">
-            <h3 className="font-medium">{data.location}</h3>
-            {data.rating && (
+            <h3 className="font-medium">{data.title}</h3>
+            {/* {data.rating && (
               <div className="flex items-center gap-1">
                 <Star
                   size={16}
@@ -89,11 +95,12 @@ export default function PropertyCard({ data }: { data: TProperty }) {
                 />
                 <span>{data.rating}</span>
               </div>
-            )}
+            )} */}
           </div>
-          <p className="text-muted-foreground text-sm">{data.dates}</p>
+          {/* <p className="text-muted-foreground text-sm">{data.dates}</p> */}
           <p className="font-semibold">
-            ₹{data.price} <span className="font-normal">per night</span>
+            ₹{data.price_per_night}{" "}
+            <span className="font-normal">per night</span>
           </p>
         </div>
       </CardContent>

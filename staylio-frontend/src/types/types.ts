@@ -3,15 +3,30 @@ export type TWhere = {
   name: string;
   description?: string;
 };
+// Property.ts
+
+export type TPropertyImage = {
+  id?: string;
+  property: string;
+  image: string;
+  created_at: string;
+};
+
 export type TProperty = {
-  id: string;
-  location: string;
-  dates: string;
-  price: number;
-  nights: number;
-  isFavorite: boolean;
-  rating: number | null;
-  images: string[];
+  id: string; // UUID
+  title: string;
+  description: string;
+  price_per_night: number;
+  bedrooms: number;
+  bathrooms: number;
+  guests: number;
+  country: string;
+  country_code: string;
+  category: string;
+  landlord: string; // You can expand to a `User` type if needed
+  created_at: string; // ISO date string
+  image_urls?: string[]; // If calling the `image_urls()` method in a serializer
+  images?: TPropertyImage[]; // If including nested image data
 };
 
 export type TReservation = {

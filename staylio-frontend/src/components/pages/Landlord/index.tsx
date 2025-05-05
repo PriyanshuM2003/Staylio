@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import PropertyCard from "@/components/common/PropertyCard";
-import { propertyData } from "@/dummyData/propertyData";
+// import PropertyCard from "@/components/common/PropertyCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 
@@ -63,9 +62,9 @@ const Landlord = () => {
       </div>
       <div className="col-span-3">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {propertyData.map((property) => (
+          {/* {propertyData.map((property) => (
             <PropertyCard key={property.id} data={property} />
-          ))}
+          ))} */}
         </div>
       </div>
     </div>

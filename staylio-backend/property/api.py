@@ -15,6 +15,6 @@ from .serializers import PropertiesListSerializer
 @permission_classes([])
 def properties_list(request):
     properties = Property.objects.all()
-    serializer = PropertiesListSerializer(properties, many=True)
+    serializer = PropertiesListSerializer(properties, many=True, context={'request': request})
 
     return JsonResponse({"data": serializer.data})
