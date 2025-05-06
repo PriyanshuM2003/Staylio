@@ -23,8 +23,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { useSignup } from "@/services/apiHooks";
-import { SignupPayload } from "@/types/payloads";
+import { useLogin, useSignup } from "@/services/apiHooks";
+import { LoginPayload, SignupPayload } from "@/types/payloads";
+import { handleLogin } from "@/services/actions";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -63,6 +65,8 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
   setAuthType,
 }) => {
   const signup = useSignup();
+  const login = useLogin();
+
   const formSchema = authType === "login" ? loginSchema : signupSchema;
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -76,18 +80,32 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (authType === "login") {
-      console.log("Login submission:", values);
-      toast.success("Logged in successfully!");
-    } else {
-      signup.mutate(values as SignupPayload, {
-        onSuccess: () => {
-          toast.success("Account created successfully!");
+      login.mutate(values as LoginPayload, {
+        onSuccess: (response) => {
+          toast.success("Logged in successfully!");
+          handleLogin(response.user.pk, response.access, response.refresh);
+          useAuthStore.getState().refreshUserId();
           setOpenAuthDialog(false);
         },
         // eslint-disable-next-line
         onError: (error: any) => {
           const message =
-            error?.response?.data?.message ||
+            error?.response?.data?.message ?? "Login failed. Please try again.";
+          toast.error(message);
+        },
+      });
+    } else {
+      signup.mutate(values as SignupPayload, {
+        onSuccess: (response) => {
+          toast.success("Account created successfully!");
+          handleLogin(response.user.pk, response.access, response.refresh);
+          useAuthStore.getState().refreshUserId();
+          setOpenAuthDialog(false);
+        },
+        // eslint-disable-next-line
+        onError: (error: any) => {
+          const message =
+            error?.response?.data?.message ??
             "Signup failed. Please try again.";
           toast.error(message);
         },

@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
 import { TProperty } from "@/types/types";
-import { SignupPayload } from "@/types/payloads";
+import { LoginPayload, SignupPayload } from "@/types/payloads";
 
 export const usePropertiesListData = () => {
   return useQuery<TProperty[]>({
@@ -27,6 +27,17 @@ export const useSignup = () => {
       };
 
       const { data } = await api.post("/auth/register/", signupData);
+
+      return data;
+    },
+  });
+};
+
+export const useLogin = () => {
+  return useMutation({
+    mutationKey: ["login"],
+    mutationFn: async (payload: LoginPayload) => {
+      const { data } = await api.post("/auth/login/", payload);
 
       return data;
     },

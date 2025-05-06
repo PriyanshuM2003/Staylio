@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FilterBar from "./FilterBar";
 import {
   DropdownMenu,
@@ -10,10 +10,18 @@ import {
 import { Home, User } from "lucide-react";
 import Link from "next/link";
 import AuthDialog from "./AuthDialog";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const Navbar = () => {
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<"login" | "signup">("login");
+  const userId = useAuthStore((state) => state.userId);
+  const refreshUserId = useAuthStore((state) => state.refreshUserId);
+  const logout = useAuthStore((state) => state.logout);
+
+  useEffect(() => {
+    refreshUserId();
+  }, [refreshUserId]);
 
   const handleLoginAuth = () => {
     setAuthType("login");
@@ -37,10 +45,18 @@ const Navbar = () => {
           <User />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={handleSignUpAuth}>
-            Sign up
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleLoginAuth}>Login</DropdownMenuItem>
+          {userId ? (
+            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+          ) : (
+            <>
+              <DropdownMenuItem onClick={handleSignUpAuth}>
+                Sign up
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLoginAuth}>
+                Login
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
