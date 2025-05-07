@@ -42,3 +42,10 @@ export async function getUserId() {
   const userId = cookieStore.get("session_userId")?.value;
   return userId ?? null;
 }
+
+export async function getAccessToken() {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("session_access_token")?.value;
+
+  return accessToken;
+}

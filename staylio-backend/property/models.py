@@ -13,7 +13,7 @@ class Property(models.Model):
     bathrooms = models.IntegerField()
     guests = models.IntegerField()
     country = models.CharField(max_length=255)
-    country_code = models.CharField(max_length=10)
+    state = models.CharField(max_length=10)
     category = models.CharField(max_length=255)
     # favor
     landlord = models.ForeignKey(
@@ -37,4 +37,4 @@ class PropertyImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Image for {self.property.title}"
+        return f"Image for {self.property.id}"

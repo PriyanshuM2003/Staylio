@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useLogin, useSignup } from "@/services/apiHooks";
-import { LoginPayload, SignupPayload } from "@/types/payloads";
+import { TLoginPayload, TSignupPayload } from "@/types/payloads";
 import { handleLogin } from "@/services/actions";
 import { useAuthStore } from "@/stores/useAuthStore";
 
@@ -80,7 +80,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (authType === "login") {
-      login.mutate(values as LoginPayload, {
+      login.mutate(values as TLoginPayload, {
         onSuccess: (response) => {
           toast.success("Logged in successfully!");
           handleLogin(response.user.pk, response.access, response.refresh);
@@ -95,7 +95,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
         },
       });
     } else {
-      signup.mutate(values as SignupPayload, {
+      signup.mutate(values as TSignupPayload, {
         onSuccess: (response) => {
           toast.success("Account created successfully!");
           handleLogin(response.user.pk, response.access, response.refresh);

@@ -32,12 +32,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full max-w-[96rem] overflow-x-hidden mx-auto bg-white`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* <></> */}
         <QueryProvider>
           <Navbar />
-          <div className="min-h-screen p-4 md:p-6">{children}</div>
+          <div className="max-w-[96rem] w-full mx-auto min-h-screen p-4 md:p-6">
+            {children}
+          </div>
           <Footer />
           <Toaster />
         </QueryProvider>

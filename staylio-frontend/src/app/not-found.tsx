@@ -10,7 +10,7 @@ export default function NotFound() {
 
   return (
     <main className="h-screen flex flex-col items-center justify-center space-y-4">
-      <h1>404</h1>
+      <b className="text-4xl">404</b>
       <h3>Page not found</h3>
       <h4>The page you are looking for does not exist.</h4>
       <Button onClick={handleGoHome}>Go Home</Button>
