@@ -41,13 +41,16 @@ export default function PropertyCard({ data }: PropertyCardProps) {
 
   return (
     <Card className="border-0 p-0 shadow-none hover:shadow-2xl relative transition-all rounded-xl">
-      <Link href={"/property/1"} className="absolute z-10 w-full h-full" />
+      <Link
+        href={`/property/${data.id}`}
+        className="absolute z-10 w-full h-full"
+      />
       <CardContent className="p-2 space-y-2">
         <div className="relative aspect-square rounded-xl overflow-hidden">
           <Carousel setApi={setApi}>
             <CarouselContent>
               {data?.images?.map((image) => (
-                <CarouselItem key={image.image}>
+                <CarouselItem key={image.id}>
                   <div className="relative aspect-square">
                     <Image
                       src={image.image}

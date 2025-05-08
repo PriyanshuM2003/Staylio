@@ -102,3 +102,16 @@ export const useUploadPropertyImage = () => {
     },
   });
 };
+
+export const usePropertyDetails = (id: string) => {
+  return useQuery<TProperty>({
+    queryKey: ["property-details", id],
+    queryFn: async () => {
+      const { data } = await api.get(`/properties/property/${id}`);
+      if (!data) {
+        throw new Error("No property data returned");
+      }
+      return data;
+    },
+  });
+};

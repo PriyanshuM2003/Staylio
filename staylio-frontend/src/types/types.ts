@@ -1,12 +1,18 @@
+export type TUser = {
+  id: string;
+  name: string;
+  email: string;
+  avatar_url: string;
+};
+
 export type TWhere = {
   id: number;
   name: string;
   description?: string;
 };
-// Property.ts
 
 export type TPropertyImage = {
-  id?: string;
+  id: string | number;
   property: string;
   image: string;
   created_at: string;
@@ -21,12 +27,11 @@ export type TProperty = {
   bathrooms: number;
   guests: number;
   country: string;
-  country_code: string;
+  state: string;
   category: string;
-  landlord: string; // You can expand to a `User` type if needed
-  created_at: string; // ISO date string
-  image_urls?: string[]; // If calling the `image_urls()` method in a serializer
-  images?: TPropertyImage[]; // If including nested image data
+  landlord: TUser;
+  created_at: string;
+  images: TPropertyImage[];
 };
 
 export type TReservation = {

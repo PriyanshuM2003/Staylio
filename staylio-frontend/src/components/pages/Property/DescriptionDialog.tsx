@@ -8,11 +8,13 @@ import {
 } from "@/components/ui/dialog";
 
 interface DescriptionDialogprops {
+  description: string;
   openDescriptionDialog: boolean;
   setOpenDescriptionDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DescriptionDialog = ({
+  description,
   openDescriptionDialog,
   setOpenDescriptionDialog,
 }: DescriptionDialogprops) => {
@@ -25,8 +27,7 @@ const DescriptionDialog = ({
         <DialogHeader>
           <DialogTitle className="text-3xl">About this space</DialogTitle>
           <DialogDescription className="text-base text-black">
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            {description}
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

@@ -47,11 +47,7 @@ def create_property(request):
         return JsonResponse({"errors": form.errors.as_json()}, status=400)
 
 
-@api_view(
-    [
-        "POST",
-    ]
-)
+@api_view(["POST"])
 def upload_property_image(request):
     form = PropertyImageForm(request.POST, request.FILES)
 
@@ -75,6 +71,8 @@ def upload_property_image(request):
 def property_details(request, pk):
     property = Property.objects.get(pk=pk)
 
-    serializer = PropertyDetailsSerializer(property, many=False)
+    serializer = PropertyDetailsSerializer(
+        property, many=False, context={"request": request}
+    )
 
     return JsonResponse(serializer.data)

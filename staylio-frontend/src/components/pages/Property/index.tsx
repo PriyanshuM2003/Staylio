@@ -24,14 +24,11 @@ import {
 import Link from "next/link";
 import DescriptionDialog from "./DescriptionDialog";
 import PlaceOffersDialog from "./PlaceOffersDialog";
-
-const images = [
-  "https://images.unsplash.com/photo-1589419896452-b460b8b390a3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1553444836-bc6c8d340ba7?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://plus.unsplash.com/premium_photo-1686090448422-de8536066f64?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-];
+import { usePropertyDetails } from "@/services/apiHooks";
+import { useParams } from "next/navigation";
 
 const Property = () => {
+  const params = useParams();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [openDescriptionDialog, setOpenDescriptionDialog] = useState(false);
@@ -64,6 +61,11 @@ const Property = () => {
   });
 
   const totalGuests = guests.adults + guests.children;
+  const id = params.id as string;
+
+  const { data, isLoading } = usePropertyDetails(id);
+
+  console.log("data", data);
 
   // Handle popover state changes
   const handlePopoverChange = (
@@ -114,18 +116,20 @@ const Property = () => {
     });
   }, [api]);
 
+  if (isLoading) return <></>;
+
   return (
     <div className="px-6 mx-auto">
       <div className="mx-auto grid gap-1 grid-cols-5">
         <div className="relative w-lg col-span-2 aspect-square rounded-xl overflow-hidden">
           <Carousel setApi={setApi}>
             <CarouselContent>
-              {images.map((src, index) => (
-                <CarouselItem key={index}>
+              {data?.images?.map((image) => (
+                <CarouselItem key={image.id}>
                   <div className="relative aspect-square">
                     <Image
-                      src={src || "/placeholder.svg"}
-                      alt={`Image ${index + 1}`}
+                      src={image.image}
+                      alt={`Image ${data.title + 1}`}
                       fill
                       className="object-cover"
                     />
@@ -137,7 +141,7 @@ const Property = () => {
             <CarouselNext className="z-20 absolute right-2 cursor-pointer" />
           </Carousel>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-30">
-            {images.map((_, index) => (
+            {data?.images?.map((_, index) => (
               <div
                 key={index}
                 className={cn(
@@ -154,22 +158,21 @@ const Property = () => {
           />
         </div>
         <div className="w-full col-span-3 space-y-4">
-          <Link href={"/landlord/1"} className="flex items-center gap-2">
+          <Link href={"/landlord/1"} className="flex items-center gap-2 w-max">
             <Avatar className="h-10 w-10">
-              <AvatarImage src="https://github.com/shadcn.png" alt="Host" />
+              <AvatarImage src={data?.landlord.avatar_url} alt="Host" />
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
             <h2 className="text-base title-font font-medium">
-              Hosted by Kanupriya
+              {data?.landlord.name}
             </h2>
           </Link>
           <div className="space-y-1">
-            <h1 className="text-3xl title-font font-medium">
-              Sunset Wooded Attic Suite in Chalet style Cottage
-            </h1>
+            <h1 className="text-3xl title-font font-medium">{data?.title}</h1>
             <div className="flex items-center gap-4">
               <h3 className="text-muted-foreground">
-                4 guests | 1 bedroom | 1 bed | 1 private bathroom
+                {data?.guests} guests | {data?.bedrooms} bedroom |{" "}
+                {data?.bathrooms} private bathroom
               </h3>
               <div className="flex items-center gap-2">
                 <span className="flex items-center">
@@ -202,11 +205,7 @@ const Property = () => {
           </div>
 
           <p className="leading-relaxed line-clamp-4">
-            Fam locavore kickstarter distillery. Mixtape chillwave tumeric
-            sriracha taximy chia microdosing tilde DIY. XOXO fam indxgo
-            juiceramps cornhole raw denim forage brooklyn. Everyday carry +1
-            seitan poutine tumeric. Gastropub blue bottle austin listicle
-            pour-over, neutra jean shorts keytar banjo tattooed umami cardigan
+            {data?.description}
             <span className="flex items-center gap-4">
               <button
                 className="underline flex font-medium cursor-pointer items-center"
@@ -259,7 +258,7 @@ const Property = () => {
               <CardContent className="p-4">
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold mb-6">
-                    $200{" "}
+                    ₹{data?.price_per_night}{" "}
                     <span className="text-base font-normal">per night</span>
                   </h2>
 
@@ -632,6 +631,7 @@ const Property = () => {
       </div>
       {openDescriptionDialog && (
         <DescriptionDialog
+          description={data?.description ?? ""}
           openDescriptionDialog={openDescriptionDialog}
           setOpenDescriptionDialog={setOpenDescriptionDialog}
         />

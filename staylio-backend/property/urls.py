@@ -4,7 +4,7 @@ from . import api
 urlpatterns = [
     path("", api.properties_list, name="api_properties_list"),
     path("create-property/", api.create_property, name="api_create_property"),
-    path("<uuid:pk>/", api.property_details, name="api_property_details"),
+    path("property/<uuid:pk>/", api.property_details, name="api_property_details"),
     path(
         "upload-property-image/",
         api.upload_property_image,
