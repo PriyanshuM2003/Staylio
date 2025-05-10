@@ -158,13 +158,16 @@ const Property = () => {
           />
         </div>
         <div className="w-full col-span-3 space-y-4">
-          <Link href={"/landlord/1"} className="flex items-center gap-2 w-max">
+          <Link
+            href={`/landlord/${data?.landlord.id}`}
+            className="flex items-center gap-2 w-max"
+          >
             <Avatar className="h-10 w-10">
               <AvatarImage src={data?.landlord.avatar_url} alt="Host" />
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
             <h2 className="text-base title-font font-medium">
-              {data?.landlord.name}
+              {data?.landlord.username}
             </h2>
           </Link>
           <div className="space-y-1">

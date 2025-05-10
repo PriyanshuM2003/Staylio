@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('email', models.EmailField(max_length=254, unique=True)),
-                ('name', models.CharField(blank=True, max_length=255, null=True)),
+                ('username', models.CharField(max_length=255)),
                 ('avatar', models.ImageField(upload_to='upload/avatars')),
                 ('is_active', models.BooleanField(default=True)),
                 ('is_superuser', models.BooleanField(default=False)),

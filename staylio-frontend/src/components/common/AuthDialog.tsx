@@ -37,7 +37,7 @@ const loginSchema = z.object({
 
 const signupSchema = z
   .object({
-    name: z.string().min(1, { message: "Username is required" }),
+    username: z.string().min(1, { message: "Username is required" }),
     email: z.string().email({ message: "Please enter a valid email address" }),
     password: z
       .string()
@@ -74,7 +74,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
     defaultValues: {
       email: "",
       password: "",
-      ...(authType === "signup" ? { confirmPassword: "", name: "" } : {}),
+      ...(authType === "signup" ? { confirmPassword: "", username: "" } : {}),
     },
   });
 
@@ -132,7 +132,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
             {authType === "signup" && (
               <FormField
                 control={form.control}
-                name="name"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name</FormLabel>

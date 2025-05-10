@@ -13,7 +13,7 @@ class Property(models.Model):
     bathrooms = models.IntegerField()
     guests = models.IntegerField()
     country = models.CharField(max_length=255)
-    state = models.CharField(max_length=10)
+    state = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
     # favor
     landlord = models.ForeignKey(

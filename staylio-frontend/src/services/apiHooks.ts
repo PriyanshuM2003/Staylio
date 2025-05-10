@@ -23,10 +23,10 @@ export const useSignup = () => {
   return useMutation({
     mutationKey: ["signup"],
     mutationFn: async (payload: TSignupPayload) => {
-      const { name, email, password, confirmPassword } = payload;
+      const { username, email, password, confirmPassword } = payload;
 
       const signupData = {
-        name,
+        username,
         email,
         password1: password,
         password2: confirmPassword,

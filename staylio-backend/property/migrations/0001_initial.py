@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('bathrooms', models.IntegerField()),
                 ('guests', models.IntegerField()),
                 ('country', models.CharField(max_length=255)),
-                ('country_code', models.CharField(max_length=10)),
+                ('state', models.CharField(max_length=255)),
                 ('category', models.CharField()),
                 ('image', models.ImageField(upload_to='uploads/properties')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
