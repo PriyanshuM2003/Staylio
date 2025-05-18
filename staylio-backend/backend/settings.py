@@ -33,10 +33,9 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS512",
 }
 
-ACCOUNT_USERNAME_REQUIRED = True  # Set this to True
-ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'  # Uncomment or add this
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
 REST_FRAMEWORK = {
