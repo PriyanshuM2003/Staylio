@@ -9,6 +9,7 @@ export type TLoginPayload = {
   email: string;
   password: string;
 };
+
 export type TCreatePropertyPayload = {
   title: string;
   description: string;
@@ -24,4 +25,12 @@ export type TCreatePropertyPayload = {
 export type TUploadPropertyImagePayload = {
   property: string;
   image: File;
+};
+
+export type TBookPropertyPayload = {
+  start_date: Date;
+  end_date: Date;
+  number_of_nights: number;
+  total_price: number;
+  guests: number;
 };

@@ -2,18 +2,25 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
 import { TProperty } from "@/types/types";
 import {
+  TBookPropertyPayload,
   TCreatePropertyPayload,
   TLoginPayload,
   TSignupPayload,
   TUploadPropertyImagePayload,
 } from "@/types/payloads";
 import { getAccessToken } from "./actions";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export const usePropertiesListData = () => {
+  const refetchKey = useAuthStore((state) => state.refetchKey);
   return useQuery<TProperty[]>({
-    queryKey: ["properties"],
+    queryKey: ["properties", refetchKey],
     queryFn: async () => {
-      const { data } = await api.get("/properties/");
+      const token = await getAccessToken();
+
+      const { data } = await api.get("/properties/", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       return data.data;
     },
   });
@@ -57,7 +64,6 @@ export const useCreateProperty = () => {
       const token = await getAccessToken();
       const formData = new FormData();
 
-      // Add each field to the FormData object
       Object.entries(payload).forEach(([key, value]) => {
         formData.append(key, value.toString());
       });
@@ -80,7 +86,7 @@ export const useCreateProperty = () => {
 
 export const useUploadPropertyImage = () => {
   return useMutation({
-    mutationKey: ["upload-property-image"],
+    mutationKey: ["upload_property_image"],
     mutationFn: async (payload: TUploadPropertyImagePayload) => {
       const token = await getAccessToken();
       const formData = new FormData();
@@ -105,12 +111,41 @@ export const useUploadPropertyImage = () => {
 
 export const usePropertyDetails = (id: string) => {
   return useQuery<TProperty>({
-    queryKey: ["property-details", id],
+    queryKey: ["property_details", id],
     queryFn: async () => {
       const { data } = await api.get(`/properties/property/${id}`);
       if (!data) {
         throw new Error("No property data returned");
       }
+      return data;
+    },
+  });
+};
+
+export const useBookProperty = (id: string) => {
+  return useMutation({
+    mutationKey: ["book_property", id],
+    mutationFn: async (payload: TBookPropertyPayload) => {
+      const token = await getAccessToken();
+      // const formData = new FormData();
+
+      // formData.append("start_date", payload.start_date.toString());
+      // formData.append("end_date", payload.end_date.toString());
+      // formData.append("number_of_nights", payload.number_of_nights.toString());
+      // formData.append("total_price", payload.total_price.toString());
+      // formData.append("guests", payload.guests.toString());
+
+      const { data } = await api.post(
+        `/properties/property/${id}/book`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        }
+      );
+
       return data;
     },
   });

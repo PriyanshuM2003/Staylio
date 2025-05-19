@@ -38,3 +38,19 @@ class PropertyImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.property.id}"
+
+
+class Reservation(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    property = models.ForeignKey(
+        Property, related_name="reservations", on_delete=models.CASCADE
+    )
+    start_date = models.DateField()
+    end_date = models.DateField()
+    number_of_nights = models.IntegerField()
+    guests = models.IntegerField()
+    total_price = models.IntegerField()
+    created_by = models.ForeignKey(
+        User, related_name="reservations", on_delete=models.CASCADE
+    )
+    created_at = models.DateTimeField(auto_now_add=True)

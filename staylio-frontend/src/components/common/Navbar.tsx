@@ -19,6 +19,7 @@ const Navbar = () => {
   const userId = useAuthStore((state) => state.userId);
   const refreshUserId = useAuthStore((state) => state.refreshUserId);
   const logout = useAuthStore((state) => state.logout);
+  const bumpRefetchKey = useAuthStore((state) => state.bumpRefetchKey);
 
   useEffect(() => {
     refreshUserId();
@@ -32,6 +33,11 @@ const Navbar = () => {
   const handleSignUpAuth = () => {
     setAuthType("signup");
     setOpenAuthDialog(true);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    bumpRefetchKey();
   };
 
   return (
@@ -52,7 +58,9 @@ const Navbar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {userId ? (
-                <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  Logout
+                </DropdownMenuItem>
               ) : (
                 <>
                   <DropdownMenuItem onClick={handleSignUpAuth}>

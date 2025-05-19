@@ -6,11 +6,14 @@ from rest_framework.decorators import (
     permission_classes,
     parser_classes,
 )
+from rest_framework.permissions import AllowAny
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from .forms import PropertyForm, PropertyImageForm
-from .models import Property, PropertyImage
+from .models import Property, Reservation
 from .serializers import (
     PropertiesListSerializer,
     PropertyDetailsSerializer,
@@ -21,10 +24,15 @@ from user.models import User
 
 
 @api_view(["GET"])
-@authentication_classes([])
-@permission_classes([])
+@authentication_classes([JWTAuthentication, SessionAuthentication, BasicAuthentication])
+@permission_classes([AllowAny])
 def properties_list(request):
-    properties = Property.objects.all()
+    user = request.user
+    if user.is_authenticated:
+        properties = Property.objects.exclude(landlord=user)
+    else:
+        properties = Property.objects.all()
+
     serializer = PropertiesListSerializer(
         properties, many=True, context={"request": request}
     )
@@ -76,3 +84,30 @@ def property_details(request, pk):
     )
 
     return JsonResponse(serializer.data)
+
+
+@api_view(["POST"])
+def book_property(request, pk):
+    try:
+        start_date = request.POST.get("start_date", "")
+        end_date = request.POST.get("end_date", "")
+        number_of_nights = request.POST.get("number_of_nights", "")
+        total_price = request.POST.get("total_price", "")
+        guests = request.POST.get("guests", "")
+
+        property = Property.objects.get(pk=pk)
+
+        Reservation.objects.create(
+            property=property,
+            start_date=start_date,
+            end_date=end_date,
+            number_of_nights=number_of_nights,
+            total_price=total_price,
+            guests=guests,
+            created_by=request.User,
+        )
+
+    except Exception as e:
+        print("Error", e)
+
+        return JsonResponse({"success": False})

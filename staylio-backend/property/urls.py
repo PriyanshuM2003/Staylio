@@ -10,4 +10,5 @@ urlpatterns = [
         api.upload_property_image,
         name="upload_property_image",
     ),
+    path("property/<uuid:pk>/book/", api.book_property, name="api_book_property"),
 ]

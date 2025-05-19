@@ -84,7 +84,9 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
         onSuccess: (response) => {
           toast.success("Logged in successfully!");
           handleLogin(response.user.pk, response.access, response.refresh);
-          useAuthStore.getState().refreshUserId();
+          const { refreshUserId, bumpRefetchKey } = useAuthStore.getState();
+          refreshUserId();
+          bumpRefetchKey();
           setOpenAuthDialog(false);
         },
         // eslint-disable-next-line
@@ -99,7 +101,9 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
         onSuccess: (response) => {
           toast.success("Account created successfully!");
           handleLogin(response.user.pk, response.access, response.refresh);
-          useAuthStore.getState().refreshUserId();
+          const { refreshUserId, bumpRefetchKey } = useAuthStore.getState();
+          refreshUserId();
+          bumpRefetchKey();
           setOpenAuthDialog(false);
         },
         // eslint-disable-next-line
