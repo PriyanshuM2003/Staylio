@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
-import { TProperty, TReservation } from "@/types/types";
+import { TProperty, TReservation, TUser } from "@/types/types";
 import {
   TBookPropertyPayload,
   TCreatePropertyPayload,
@@ -11,16 +11,20 @@ import {
 import { getAccessToken } from "../services/actions";
 import { useAuthStore } from "@/stores/useAuthStore";
 
-export const usePropertiesListData = () => {
+export const usePropertiesListData = (landlordId?: string) => {
   const refetchKey = useAuthStore((state) => state.refetchKey);
+
   return useQuery<TProperty[]>({
-    queryKey: ["properties", refetchKey],
+    queryKey: ["properties", landlordId, refetchKey],
     queryFn: async () => {
       const token = await getAccessToken();
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
       const { data } = await api.get("/properties/", {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        headers,
+        params: landlordId ? { landlord_id: landlordId } : {},
       });
+
       return data.data;
     },
   });
@@ -123,7 +127,7 @@ export const usePropertyDetails = (id: string) => {
 };
 
 export const useBookProperty = (id: string) => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["book_property", id],
     mutationFn: async (payload: TBookPropertyPayload) => {
@@ -153,11 +157,12 @@ export const useBookProperty = (id: string) => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["property_reservations", id] })
+      queryClient.invalidateQueries({
+        queryKey: ["property_reservations", id],
+      });
     },
-  })
-}
-
+  });
+};
 
 export const usePropertyReservations = (id: string) => {
   return useQuery<TReservation[]>({
@@ -172,5 +177,18 @@ export const usePropertyReservations = (id: string) => {
       return data;
     },
     refetchOnWindowFocus: true,
+  });
+};
+
+export const useLandlord = (id: string) => {
+  return useQuery<TUser>({
+    queryKey: ["landlord", id],
+    queryFn: async () => {
+      const { data } = await api.get(`/auth/${id}`);
+      if (!data) {
+        throw new Error("No landlord data returned");
+      }
+      return data;
+    },
   });
 };

@@ -1,16 +1,20 @@
 "use client";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "../ui/button";
-import Image from "next/image";
-import { TReservation } from "@/types/types";
-import Link from "next/link";
+// import { Button } from "../ui/button";
+// import Image from "next/image";
+// import Link from "next/link";
+// import { TReservation } from "@/types/types";
 
-const ReservationCard = ({ data }: { data: TReservation }) => {
-  return (
-    <Card className="p-0">
-      <CardContent className="sm:flex p-4 max-sm:space-y-4 gap-4">
-        <div className="relative aspect-square sm:w-52 rounded-xl overflow-hidden">
+const ReservationCard = (
+  // { data }: { data: TReservation }
+) =>
+
+  {
+    return (
+      <Card className="p-0">
+        <CardContent className="sm:flex p-4 max-sm:space-y-4 gap-4">
+          {/* <div className="relative aspect-square sm:w-52 rounded-xl overflow-hidden">
           <Image
             src={data.imageUrl}
             alt={`Image`}
@@ -57,10 +61,10 @@ const ReservationCard = ({ data }: { data: TReservation }) => {
               </Link>
             </Button>
           </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+        </div> */}
+        </CardContent>
+      </Card>
+    );
+  };
 
 export default ReservationCard;

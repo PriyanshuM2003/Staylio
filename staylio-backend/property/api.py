@@ -27,10 +27,14 @@ from user.models import User
 @permission_classes([AllowAny])
 def properties_list(request):
     user = request.user
+    landlord_id = request.GET.get("landlord_id", "")
     if user.is_authenticated:
         properties = Property.objects.exclude(landlord=user)
     else:
         properties = Property.objects.all()
+        
+    if landlord_id:
+        properties = properties.filter(landlord_id=landlord_id)
 
     serializer = PropertiesListSerializer(
         properties, many=True, context={"request": request}
@@ -93,7 +97,7 @@ def property_reservations(request, pk):
     reservations = property.reservations.all()
 
     serializer = ReservationListSerializer(reservations, many=True)
-    
+
     return JsonResponse(serializer.data, safe=False)
 
 
