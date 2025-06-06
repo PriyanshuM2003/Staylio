@@ -1,10 +1,8 @@
 "use client";
 import { useState, useRef } from "react";
 import type React from "react";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -29,33 +27,7 @@ import { Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-
-const propertyFormSchema = z.object({
-  title: z.string().min(5, { message: "Title must be at least 5 characters." }),
-  description: z
-    .string()
-    .min(20, { message: "Description must be at least 20 characters." }),
-  price_per_night: z.coerce
-    .number()
-    .positive({ message: "Price must be a positive number." }),
-  bedrooms: z.coerce
-    .number()
-    .int()
-    .positive({ message: "Bedrooms must be a positive number." }),
-  bathrooms: z.coerce
-    .number()
-    .int()
-    .positive({ message: "Bathrooms must be a positive number." }),
-  guests: z.coerce
-    .number()
-    .int()
-    .positive({ message: "Guests must be a positive number." }),
-  country: z.string().min(2, { message: "Country is required." }),
-  state: z.string().min(1, { message: "State is required." }),
-  category: z.string().min(1, { message: "Category is required." }),
-});
-
-type PropertyFormValues = z.infer<typeof propertyFormSchema>;
+import { propertyFormSchema, PropertyFormValues } from "@/schemas/property-schema";
 
 const categories = [
   "Apartment",

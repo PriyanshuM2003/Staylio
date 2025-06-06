@@ -86,14 +86,14 @@ def property_details(request, pk):
     return JsonResponse(serializer.data)
 
 
-@api_view(["POST"])
+@api_view(['POST'])
 def book_property(request, pk):
     try:
-        start_date = request.POST.get("start_date", "")
-        end_date = request.POST.get("end_date", "")
-        number_of_nights = request.POST.get("number_of_nights", "")
-        total_price = request.POST.get("total_price", "")
-        guests = request.POST.get("guests", "")
+        start_date = request.POST.get('start_date', '')
+        end_date = request.POST.get('end_date', '')
+        number_of_nights = request.POST.get('number_of_nights', '')
+        total_price = request.POST.get('total_price', '')
+        guests = request.POST.get('guests', '')
 
         property = Property.objects.get(pk=pk)
 
@@ -104,10 +104,11 @@ def book_property(request, pk):
             number_of_nights=number_of_nights,
             total_price=total_price,
             guests=guests,
-            created_by=request.User,
+            created_by=request.user
         )
 
+        return JsonResponse({'success': True})
     except Exception as e:
-        print("Error", e)
+        print('Error', e)
 
-        return JsonResponse({"success": False})
+        return JsonResponse({'success': False})

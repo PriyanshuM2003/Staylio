@@ -50,9 +50,11 @@ const Navbar = () => {
         </Link>
         <FilterBar />
         <div className="flex items-center gap-4">
-          <Button asChild variant={"secondary"} className="rounded-full">
-            <Link href={"/add-property"}>Staylio Your Home</Link>
-          </Button>
+          {userId && (
+            <Button asChild variant={"secondary"} className="rounded-full">
+              <Link href={"/add-property"}>Staylio Your Home</Link>
+            </Button>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger className="cursor-pointer hover:bg-accent rounded-full p-1">
               <User />

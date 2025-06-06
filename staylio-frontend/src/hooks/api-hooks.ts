@@ -127,17 +127,20 @@ export const useBookProperty = (id: string) => {
     mutationKey: ["book_property", id],
     mutationFn: async (payload: TBookPropertyPayload) => {
       const token = await getAccessToken();
-      // const formData = new FormData();
+      const formData = new FormData();
+      const formatDate = (date: Date): string => {
+        return date.toISOString().split("T")[0];
+      };
 
-      // formData.append("start_date", payload.start_date.toString());
-      // formData.append("end_date", payload.end_date.toString());
-      // formData.append("number_of_nights", payload.number_of_nights.toString());
-      // formData.append("total_price", payload.total_price.toString());
-      // formData.append("guests", payload.guests.toString());
+      formData.append("start_date", formatDate(payload.start_date));
+      formData.append("end_date", formatDate(payload.end_date));
+      formData.append("number_of_nights", payload.number_of_nights.toString());
+      formData.append("total_price", payload.total_price.toString());
+      formData.append("guests", payload.guests.toString());
 
       const { data } = await api.post(
-        `/properties/property/${id}/book`,
-        payload,
+        `/properties/property/${id}/book/`,
+        formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
