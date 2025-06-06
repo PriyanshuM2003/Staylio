@@ -36,14 +36,11 @@ export type TProperty = {
 
 export type TReservation = {
   id: string;
-  propertyName: string;
-  imageUrl: string;
-  checkInDate: string;
-  checkOutDate: string;
-  numberOfDays: number;
-  numberOfNights: number;
-  numberOfGuests: number;
-  totalPrice: number;
+  property: TProperty;
+  start_date: Date;
+  end_date: Date;
+  number_of_nights: number;
+  total_price: number;
 };
 
 export type TInbox = {

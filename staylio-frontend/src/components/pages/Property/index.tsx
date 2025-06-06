@@ -18,8 +18,8 @@ import Link from "next/link";
 import DescriptionDialog from "./DescriptionDialog";
 import PlaceOffersDialog from "./PlaceOffersDialog";
 import { usePropertyDetails } from "@/hooks/api-hooks";
-import BookingCard from "./Booking/BookingCard";
 import { useParams } from "next/navigation";
+import BookingCard from "./BookingCard";
 
 const Property = () => {
   const params = useParams();

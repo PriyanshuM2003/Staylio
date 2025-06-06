@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/axios";
-import { TProperty } from "@/types/types";
+import { TProperty, TReservation } from "@/types/types";
 import {
   TBookPropertyPayload,
   TCreatePropertyPayload,
@@ -123,6 +123,7 @@ export const usePropertyDetails = (id: string) => {
 };
 
 export const useBookProperty = (id: string) => {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationKey: ["book_property", id],
     mutationFn: async (payload: TBookPropertyPayload) => {
@@ -151,5 +152,25 @@ export const useBookProperty = (id: string) => {
 
       return data;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["property_reservations", id] })
+    },
+  })
+}
+
+
+export const usePropertyReservations = (id: string) => {
+  return useQuery<TReservation[]>({
+    queryKey: ["property_reservations", id],
+    queryFn: async () => {
+      const { data } = await api.get(
+        `/properties/property/${id}/reservations/`
+      );
+      if (!data) {
+        throw new Error("No property reservations data returned");
+      }
+      return data;
+    },
+    refetchOnWindowFocus: true,
   });
 };

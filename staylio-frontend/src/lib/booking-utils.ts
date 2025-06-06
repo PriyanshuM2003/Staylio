@@ -1,5 +1,7 @@
+import type { TReservation } from "@/types/types"
+
 export const calculateNights = (checkIn: Date | null, checkOut: Date | null): number => {
-  if (!checkIn || !checkOut) return 1
+  if (!checkIn || !checkOut) return 0
   return Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))
 }
 
@@ -12,6 +14,7 @@ export const calculateServiceFee = (basePrice: number): number => {
 }
 
 export const calculateTotalPrice = (pricePerNight: number, nights: number): number => {
+  if (nights === 0) return 0
   const basePrice = calculateBasePrice(pricePerNight, nights)
   const serviceFee = calculateServiceFee(basePrice)
   return basePrice + serviceFee
@@ -24,11 +27,7 @@ export const formatGuestDisplay = (guests: {
   pets: number
 }): string => {
   const totalGuests = guests.adults + guests.children
-  let guestLabel = "guest"
-  if (totalGuests > 1) {
-    guestLabel = "guests"
-  }
-  let display = totalGuests > 0 ? `${totalGuests} ${guestLabel}` : "Add guests"
+  let display = totalGuests > 0 ? `${totalGuests} guest${totalGuests > 1 ? "s" : ""}` : "Add guests"
 
   if (guests.infants > 0) {
     display += `, ${guests.infants} infant${guests.infants > 1 ? "s" : ""}`
@@ -43,4 +42,29 @@ export const formatGuestDisplay = (guests: {
 
 export const formatDateDisplay = (date: Date | null): string => {
   return date ? date.toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "Add date"
+}
+
+export const isDateReserved = (date: Date, reservations: TReservation[] | undefined): boolean => {
+  if (!reservations || reservations.length === 0) return false
+
+  const checkDate = new Date(date)
+  checkDate.setHours(0, 0, 0, 0)
+  const checkTime = checkDate.getTime()
+
+  for (const reservation of reservations) {
+    const startDate = new Date(reservation.start_date)
+    const endDate = new Date(reservation.end_date)
+
+    startDate.setHours(0, 0, 0, 0)
+    endDate.setHours(0, 0, 0, 0)
+
+    const startTime = startDate.getTime()
+    const endTime = endDate.getTime()
+
+    if (checkTime >= startTime && checkTime < endTime) {
+      return true
+    }
+  }
+
+  return false
 }
