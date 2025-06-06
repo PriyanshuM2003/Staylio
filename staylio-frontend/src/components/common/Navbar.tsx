@@ -12,6 +12,7 @@ import Link from "next/link";
 import AuthDialog from "./AuthDialog";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Button } from "../ui/button";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Navbar = () => {
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
@@ -42,7 +43,7 @@ const Navbar = () => {
 
   return (
     <div className="z-50 gap-6 sticky top-0 border-b">
-      <nav className="max-w-[96rem] w-full mx-auto flex items-center bg-white p-4 md:p-6 justify-between">
+      <nav className="max-w-[96rem] w-full mx-auto flex items-center bg-background p-4 md:p-6 justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Home className="stroke-red-500 shrink-0" />
           <h1 className="text-2xl font-bold text-red-500">Staylio</h1>
@@ -73,6 +74,7 @@ const Navbar = () => {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
+          <ThemeToggle />
         </div>
       </nav>
 

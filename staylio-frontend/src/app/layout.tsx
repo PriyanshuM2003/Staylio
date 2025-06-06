@@ -5,6 +5,7 @@ import QueryProvider from "./QueryProvider";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,14 +35,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <></> */}
         <QueryProvider>
-          <Navbar />
-          <div className="max-w-[96rem] w-full mx-auto min-h-screen p-4 md:p-6">
-            {children}
-          </div>
-          <Footer />
-          <Toaster />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar />
+            <div className="max-w-[96rem] w-full mx-auto min-h-screen p-4 md:p-6">
+              {children}
+            </div>
+            <Footer />
+            <Toaster />
+          </ThemeProvider>
         </QueryProvider>
       </body>
     </html>

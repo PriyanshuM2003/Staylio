@@ -169,7 +169,7 @@ export default function FilterBar() {
   const results = filteredResults();
 
   return (
-    <div className="flex items-center border gap-2 bg-gray-100 rounded-full shadow-sm divide-x hover:shadow-md transition-shadow duration-200">
+    <div className="flex items-center border gap-2 bg-secondary rounded-full shadow-sm divide-x hover:shadow-md transition-shadow duration-200">
       {/* Where Section */}
       <Popover
         open={activePopover === "where"}

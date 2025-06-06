@@ -72,18 +72,18 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="text-gray-600 bg-gray-100 body-font">
+    <footer className="text-muted-foreground bg-secondary body-font">
       <div className="max-w-[96rem] w-full p-4 md:p-16 mx-auto flex flex-wrap md:flex-nowrap flex-col md:flex-row">
         {/* Logo Section */}
         <div className="w-64 flex-shrink-0 mx-auto md:mx-0 text-center md:text-left">
           <Link
             href="/"
-            className="flex title-font font-medium gap-2 items-center justify-center md:justify-start text-gray-900"
+            className="flex title-font font-medium gap-2 items-center justify-center md:justify-start"
           >
             <Home className="stroke-red-500 shrink-0" />
             <h1 className="text-2xl font-bold text-red-500">Staylio</h1>
           </Link>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-muted-foreground">
             {/* Air plant banjo lyft occupy retro adaptogen indego */}
           </p>
         </div>
@@ -92,7 +92,7 @@ const Footer = () => {
         <div className="flex-grow flex flex-wrap md:pl-20 -mb-10 md:mt-0 mt-10 text-center md:text-left">
           {[...Array(4)].map((_, index) => (
             <div key={index} className="lg:w-1/4 md:w-1/2 w-full px-4">
-              <h2 className="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">
+              <h2 className="title-font font-medium text-accent-foreground tracking-widest text-sm mb-3">
                 CATEGORIES
               </h2>
               <nav className="list-none mb-10">
@@ -100,7 +100,7 @@ const Footer = () => {
                   <li key={idx}>
                     <Link
                       href="/"
-                      className="text-gray-600 hover:text-gray-800"
+                      className="text-muted-foreground hover:text-accent-foreground"
                     >
                       {item}
                     </Link>
@@ -113,9 +113,9 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="bg-gray-100">
+      <div className="bg-secondary">
         <div className="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
-          <p className="text-gray-500 text-sm text-center sm:text-left">
+          <p className="text-muted-foreground text-sm text-center sm:text-left">
             © 2025 Staylio
           </p>
           <span className="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
@@ -123,7 +123,7 @@ const Footer = () => {
               <Link
                 href={icon.href}
                 key={idx}
-                className="text-gray-500 ml-3 first:ml-0"
+                className="text-muted-foreground ml-3 first:ml-0"
               >
                 {icon.svg}
               </Link>
