@@ -23,7 +23,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { useLogin, useSignup } from "@/services/apiHooks";
+import { useLogin, useSignup } from "@/hooks/api-hooks";
 import { TLoginPayload, TSignupPayload } from "@/types/payloads";
 import { handleLogin } from "@/services/actions";
 import { useAuthStore } from "@/stores/useAuthStore";

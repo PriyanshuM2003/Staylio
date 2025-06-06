@@ -17,7 +17,7 @@ import { Bed, ChevronRight, DoorOpen, Heart, MapPin, Star } from "lucide-react";
 import Link from "next/link";
 import DescriptionDialog from "./DescriptionDialog";
 import PlaceOffersDialog from "./PlaceOffersDialog";
-import { usePropertyDetails } from "@/services/apiHooks";
+import { usePropertyDetails } from "@/hooks/api-hooks";
 import BookingCard from "./BookingCard";
 import { useParams } from "next/navigation";
 

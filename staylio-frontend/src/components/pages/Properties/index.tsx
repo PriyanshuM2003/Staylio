@@ -3,7 +3,7 @@ import React from "react";
 import CategoryFilter from "@/components/common/CategoryFilter";
 import PropertyCard from "@/components/common/PropertyCard";
 import PropertyCardSkeleton from "@/components/common/skeletons/PropertyCardSkeleton";
-import { usePropertiesListData } from "@/services/apiHooks";
+import { usePropertiesListData } from "@/hooks/api-hooks";
 
 const Properties = () => {
   const {

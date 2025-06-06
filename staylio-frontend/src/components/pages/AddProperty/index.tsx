@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCreateProperty, useUploadPropertyImage } from "@/services/apiHooks";
+import { useCreateProperty, useUploadPropertyImage } from "@/hooks/api-hooks";
 import { Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";

@@ -8,7 +8,7 @@ import {
   TSignupPayload,
   TUploadPropertyImagePayload,
 } from "@/types/payloads";
-import { getAccessToken } from "./actions";
+import { getAccessToken } from "../services/actions";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export const usePropertiesListData = () => {
