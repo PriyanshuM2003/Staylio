@@ -1,5 +1,4 @@
 import MyProperties from "@/components/pages/MyProperties";
-import { getUserId } from "@/services/actions";
 import {
   dehydrate,
   HydrationBoundary,

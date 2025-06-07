@@ -9,16 +9,18 @@ import AuthDialog from "@/components/common/AuthDialog";
 import PropertyCard from "@/components/common/PropertyCard";
 import PropertyCardSkeleton from "@/components/common/skeletons/PropertyCardSkeleton";
 import LandlordCardSkeleton from "@/components/common/skeletons/LandlordCardSkeleton";
+import { useParams } from "next/navigation";
 
-const Landlord = ({ id, userId }: { id: string; userId: string }) => {
+const Landlord = ({ userId }: { userId: string }) => {
+  const params = useParams();
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<"login" | "signup">("login");
-  const { data, isLoading, isError } = useLandlord(id);
+  const { data, isLoading, isError } = useLandlord(params.id as string);
   const {
     data: propertyData,
     isLoading: loadingPropertyData,
     isError: errorPropertyData,
-  } = usePropertiesListData(id);
+  } = usePropertiesListData(params.id as string);
 
   return (
     <div className="grid gap-6 grid-cols-4">

@@ -5,11 +5,11 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 
-export default async function page({ params }: { params: { id: string } }) {
+export default async function page() {
   const queryClient = new QueryClient();
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Converstation id={params.id} />
+      <Converstation />
     </HydrationBoundary>
   );
 }

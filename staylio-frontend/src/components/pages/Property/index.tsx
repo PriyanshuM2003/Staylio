@@ -19,14 +19,16 @@ import DescriptionDialog from "./DescriptionDialog";
 import PlaceOffersDialog from "./PlaceOffersDialog";
 import { usePropertyDetails } from "@/hooks/api-hooks";
 import BookingCard from "./BookingCard";
+import { useParams } from "next/navigation";
 
-const Property = ({ id, userId }: { id: string; userId: string }) => {
+const Property = ({ userId }: { userId: string }) => {
+  const params = useParams();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [openDescriptionDialog, setOpenDescriptionDialog] = useState(false);
   const [openPlaceOffersDialog, setOpenPlaceOffersDialog] = useState(false);
 
-  const { data, isLoading, isError } = usePropertyDetails(id);
+  const { data, isLoading, isError } = usePropertyDetails(params.id as string);
 
   useEffect(() => {
     if (!api) {

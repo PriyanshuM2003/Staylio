@@ -6,13 +6,12 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 
-export default async function page({ params }: { params: { id: string } }) {
+export default async function page() {
   const queryClient = new QueryClient();
   const userId = await getUserId();
-
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Property id={params.id} userId={userId!} />
+      <Property userId={userId!} />
     </HydrationBoundary>
   );
 }

@@ -5,9 +5,8 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const Converstation = ({ id }: { id: string }) => {
+const Converstation = () => {
   const router = useRouter();
-  console.log(id);
   return (
     <div className="rounded-r-2xl h-[80vh] p-4 border border-l-0 w-full">
       <div className="space-y-6">
