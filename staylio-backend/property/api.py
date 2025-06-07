@@ -26,6 +26,7 @@ from user.models import User
 @authentication_classes([JWTAuthentication, SessionAuthentication, BasicAuthentication])
 @permission_classes([AllowAny])
 def properties_list(request):
+
     user = request.user
     landlord_id = request.GET.get("landlord_id", "")
 
@@ -45,17 +46,14 @@ def properties_list(request):
 
 
 @api_view(["GET"])
-@authentication_classes([JWTAuthentication, SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])
 def auth_user_properties_list(request):
     user = request.user
     is_favorites = request.GET.get("is_favorites", "")
 
-    if user.is_authenticated:
-        properties = Property.objects.filter(landlord=user)
-
     if is_favorites:
-        properties = properties.filter(favorited__in=[user])
+        properties = Property.objects.filter(favorited__in=[user])
+    else:
+        properties = Property.objects.filter(landlord=user)
 
     serializer = PropertiesListSerializer(
         properties, many=True, context={"request": request}

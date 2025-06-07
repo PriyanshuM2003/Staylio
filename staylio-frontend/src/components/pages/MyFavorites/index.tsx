@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
-import { useUserPropertiesListData } from "@/hooks/api-hooks";
+import { useUserFavoriteProperties } from "@/hooks/api-hooks";
 import PropertyCard from "@/components/common/PropertyCard";
 import PropertyCardSkeleton from "@/components/common/skeletons/PropertyCardSkeleton";
 
-const MyProperties = () => {
-  const { data, isLoading, isError } = useUserPropertiesListData();
+const MyFavorties = () => {
+  const { data, isLoading, isError } = useUserFavoriteProperties();
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-medium">My Properties</h1>
+      <h1 className="text-2xl font-medium">My Favorites</h1>
       {(() => {
         if (isLoading) {
           return (
@@ -22,7 +22,7 @@ const MyProperties = () => {
         }
 
         if (isError) {
-          return <p>Error loading your properties data</p>;
+          return <p>Error loading your favorite properties data</p>;
         }
 
         return (
@@ -37,4 +37,4 @@ const MyProperties = () => {
   );
 };
 
-export default MyProperties;
+export default MyFavorties;

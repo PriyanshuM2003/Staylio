@@ -45,7 +45,7 @@ export const fetchUserFavoriteProperties = async (): Promise<TProperty[]> => {
   const { data } = await api.get("/properties/user-properties", {
     headers,
     params: { is_favorites: true },
-  });
+  });  
 
   return data.data;
 };

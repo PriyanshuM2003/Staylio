@@ -102,6 +102,7 @@ export const useToggleFavorite = (propertyId: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["properties"] });
       queryClient.invalidateQueries({ queryKey: ["user-properties"] });
+      queryClient.invalidateQueries({ queryKey: ["user-favorite-properties"] });
       queryClient.invalidateQueries({
         queryKey: ["property_details", propertyId],
       });
