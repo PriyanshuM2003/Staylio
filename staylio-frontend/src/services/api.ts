@@ -23,6 +23,16 @@ export const fetchProperties = async (
 
   return data.data;
 };
+export const fetchUserProperties = async (): Promise<TProperty[]> => {
+  const token = await getAccessToken();
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const { data } = await api.get("/properties/user-properties", {
+    headers,
+  });
+
+  return data.data;
+};
 
 export const fetchPropertyDetails = async (id: string): Promise<TProperty> => {
   const { data } = await api.get(`/properties/property/${id}`);

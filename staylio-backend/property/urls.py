@@ -3,6 +3,11 @@ from . import api
 
 urlpatterns = [
     path("", api.properties_list, name="api_properties_list"),
+    path(
+        "user-properties",
+        api.auth_user_properties_list,
+        name="api_auth_user_properties_list",
+    ),
     path("create-property/", api.create_property, name="api_create_property"),
     path("property/<uuid:pk>/", api.property_details, name="api_property_details"),
     path(

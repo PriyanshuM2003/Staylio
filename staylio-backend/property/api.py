@@ -6,7 +6,7 @@ from rest_framework.decorators import (
     permission_classes,
     parser_classes,
 )
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status
@@ -32,9 +32,24 @@ def properties_list(request):
         properties = Property.objects.exclude(landlord=user)
     else:
         properties = Property.objects.all()
-        
+
     if landlord_id:
         properties = properties.filter(landlord_id=landlord_id)
+
+    serializer = PropertiesListSerializer(
+        properties, many=True, context={"request": request}
+    )
+
+    return JsonResponse({"data": serializer.data})
+
+
+@api_view(["GET"])
+@authentication_classes([JWTAuthentication, SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def auth_user_properties_list(request):
+    user = request.user
+    if user.is_authenticated:
+        properties = Property.objects.filter(landlord=user)
 
     serializer = PropertiesListSerializer(
         properties, many=True, context={"request": request}
