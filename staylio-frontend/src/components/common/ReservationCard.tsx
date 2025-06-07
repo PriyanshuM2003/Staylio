@@ -1,60 +1,71 @@
 "use client";
+
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { TReservation } from "@/types/types";
+import { format } from "date-fns";
 
 const ReservationCard = ({ data }: { data: TReservation }) => {
-  console.log(data);
+  const {
+    property,
+    start_date,
+    end_date,
+    number_of_nights,
+    guests,
+    total_price,
+  } = data;
 
   return (
     <Card className="p-0">
-      <CardContent className="sm:flex p-4 max-sm:space-y-4 gap-4">
+      <CardContent className="sm:flex p-4 gap-4 max-sm:space-y-4">
         <div className="relative aspect-square sm:w-52 rounded-xl overflow-hidden">
           <Image
-            src={data.property.images[0].image}
-            alt={`Image`}
+            src={property.images[0].image}
+            alt={`Image of ${property.title}`}
             fill
             className="object-cover rounded-xl"
           />
         </div>
-        <div className="flex-1 flex flex-col justify-between gap-2 w-full">
+        <div className="flex flex-col justify-between gap-4 w-full">
           <div className="space-y-1">
-            <h2 className="text-lg font-medium">{data.property.title}</h2>
-            <h3 className="font-medium text-muted-foreground">
-              Check-in date:&nbsp;
-              <span className="text-black">{data.start_date}</span>
-            </h3>
-            <h3 className="font-medium text-muted-foreground">
-              Check-out date:&nbsp;
-              <span className="text-black">{data.end_date}</span>
-            </h3>
-            <h3 className="font-medium text-muted-foreground">
-              No. of days:&nbsp;
-              <span className="text-black">{data.number_of_nights - 1}</span>
-            </h3>
-            <h3 className="font-medium text-muted-foreground">
-              No. of nights:&nbsp;
-              <span className="text-black">{data.number_of_nights}</span>
-            </h3>
-            <h3 className="font-medium text-muted-foreground">
-              No. of Guests:&nbsp;
-              <span className="text-black">{data.guests}</span>
-            </h3>
-            <h3 className="font-medium text-muted-foreground">
-              Total price:&nbsp;
-              <span className="text-black">₹{data.total_price}</span>
-            </h3>
+            <h2 className="text-lg font-semibold">{property.title}</h2>
+            <div className="text-sm text-muted-foreground font-medium space-y-1">
+              <p>
+                Check-in:&nbsp;
+                <span className="text-black">
+                  {format(new Date(start_date), "dd MMMM yyyy")}
+                </span>
+              </p>
+              <p>
+                Check-out:&nbsp;
+                <span className="text-black">
+                  {format(new Date(end_date), "dd MMMM yyyy")}
+                </span>
+              </p>
+              <p>
+                Nights:&nbsp;
+                <span className="text-black">{number_of_nights}</span>
+              </p>
+              <p>
+                Guests:&nbsp;
+                <span className="text-black">{guests}</span>
+              </p>
+              <p>
+                Total Price:&nbsp;
+                <span className="text-black">₹{total_price}</span>
+              </p>
+            </div>
           </div>
-          <div className="flex w-full justify-end">
+          <div className="flex justify-end">
             <Button
               asChild
-              variant={"destructive"}
+              variant="destructive"
               className="max-sm:w-full max-sm:mt-2"
             >
-              <Link href={"/"} className="flex w-max justify-end">
+              <Link href={`/property/${property.id}`}>
                 Go to Property
               </Link>
             </Button>

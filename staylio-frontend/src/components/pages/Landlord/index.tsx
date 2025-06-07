@@ -105,7 +105,7 @@ const Landlord = ({ userId }: { userId: string }) => {
           }
 
           if (errorPropertyData) {
-            return <p>Error loading landlord propert data</p>;
+            return <p>Error loading landlord property data.</p>;
           }
 
           return (
