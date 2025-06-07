@@ -45,6 +45,9 @@ const UserDropDown = ({ userId }: { userId: string }) => {
               <DropdownMenuItem asChild>
                 <Link href={"/my-properties"}>My Properties</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={"/my-reservations"}>My Reservations</Link>
+              </DropdownMenuItem>
               <Separator />
               <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </>

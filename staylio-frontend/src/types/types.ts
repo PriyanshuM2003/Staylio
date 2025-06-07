@@ -41,6 +41,7 @@ export type TReservation = {
   end_date: Date;
   number_of_nights: number;
   total_price: number;
+  guests: number;
 };
 
 export type TInbox = {

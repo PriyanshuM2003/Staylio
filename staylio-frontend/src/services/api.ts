@@ -23,6 +23,7 @@ export const fetchProperties = async (
 
   return data.data;
 };
+
 export const fetchUserProperties = async (): Promise<TProperty[]> => {
   const token = await getAccessToken();
   const headers = { Authorization: `Bearer ${token}` };
@@ -30,6 +31,7 @@ export const fetchUserProperties = async (): Promise<TProperty[]> => {
   const { data } = await api.get("/properties/user-properties", {
     headers,
   });
+  if (!data) throw new Error("No user properties found");
 
   return data.data;
 };
@@ -51,6 +53,18 @@ export const fetchPropertyReservations = async (
 export const fetchLandlord = async (id: string): Promise<TUser> => {
   const { data } = await api.get(`/auth/${id}`);
   if (!data) throw new Error("No landlord data");
+  return data;
+};
+
+export const fetchUserReservations = async (): Promise<TReservation[]> => {
+  const token = await getAccessToken();
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const { data } = await api.get("/auth/my-reservations/", {
+    headers,
+  });
+
+  if (!data) throw new Error("No user reservations found");
   return data;
 };
 

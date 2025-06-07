@@ -10,6 +10,7 @@ import {
   uploadPropertyImage,
   bookProperty,
   fetchUserProperties,
+  fetchUserReservations,
 } from "@/services/api";
 import { TBookPropertyPayload } from "@/types/payloads";
 import { useRefetchStore } from "@/stores/useRefetchStore";
@@ -47,6 +48,12 @@ export const useLandlord = (id: string) =>
   useQuery({
     queryKey: ["landlord", id],
     queryFn: () => fetchLandlord(id),
+  });
+  
+export const useUserReservations = () =>
+  useQuery({
+    queryKey: ["user-reservations"],
+    queryFn: () => fetchUserReservations(),
   });
 
 export const useSignup = () =>

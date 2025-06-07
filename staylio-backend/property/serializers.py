@@ -60,5 +60,6 @@ class ReservationListSerializer(serializers.ModelSerializer):
             "end_date",
             "number_of_nights",
             "total_price",
+            "guests",
             "property",
         )
