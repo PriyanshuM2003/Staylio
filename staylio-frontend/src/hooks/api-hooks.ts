@@ -9,6 +9,7 @@ import {
   createProperty,
   uploadPropertyImage,
   bookProperty,
+  fetchUserProperties,
 } from "@/services/api";
 import { TBookPropertyPayload } from "@/types/payloads";
 import { useRefetchStore } from "@/stores/useRefetchStore";
@@ -19,6 +20,13 @@ export const usePropertiesListData = (landlordId?: string) => {
   return useQuery({
     queryKey: ["properties", landlordId, refetchKey],
     queryFn: () => fetchProperties(landlordId),
+  });
+};
+
+export const useUserPropertiesListData = () => {
+  return useQuery({
+    queryKey: ["user-properties"],
+    queryFn: () => fetchUserProperties(),
   });
 };
 

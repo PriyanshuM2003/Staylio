@@ -7,11 +7,10 @@ import {
 } from "@tanstack/react-query";
 
 export default async function page() {
-  const userId = await getUserId();
   const queryClient = new QueryClient();
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <MyProperties userId={userId!} />
+      <MyProperties />
     </HydrationBoundary>
   );
 }
