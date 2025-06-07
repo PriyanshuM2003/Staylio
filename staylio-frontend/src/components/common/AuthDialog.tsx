@@ -92,6 +92,9 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
             queryKey: ["user-favorite-properties"],
           });
           queryClient.invalidateQueries({ queryKey: ["user-reservations"] });
+          queryClient.invalidateQueries({
+            queryKey: ["property_details"],
+          });
           setOpenAuthDialog(false);
         },
         // eslint-disable-next-line
@@ -110,6 +113,9 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
           queryClient.invalidateQueries({ queryKey: ["user-properties"] });
           queryClient.invalidateQueries({
             queryKey: ["user-favorite-properties"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["property_details"],
           });
           queryClient.invalidateQueries({ queryKey: ["user-reservations"] });
           setOpenAuthDialog(false);

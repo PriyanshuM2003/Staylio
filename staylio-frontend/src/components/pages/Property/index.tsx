@@ -17,9 +17,10 @@ import { Bed, ChevronRight, DoorOpen, Heart, MapPin, Star } from "lucide-react";
 import Link from "next/link";
 import DescriptionDialog from "./DescriptionDialog";
 import PlaceOffersDialog from "./PlaceOffersDialog";
-import { usePropertyDetails } from "@/hooks/api-hooks";
+import { usePropertyDetails, useToggleFavorite } from "@/hooks/api-hooks";
 import BookingCard from "./BookingCard";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 const Property = ({ userId }: { userId: string }) => {
   const params = useParams();
@@ -29,6 +30,16 @@ const Property = ({ userId }: { userId: string }) => {
   const [openPlaceOffersDialog, setOpenPlaceOffersDialog] = useState(false);
 
   const { data, isLoading, isError } = usePropertyDetails(params.id as string);
+
+  const [isFavorited, setIsFavorited] = useState(data?.is_favorite);
+
+  const { mutate: toggleFavorite, isPending } = useToggleFavorite(
+    params.id as string
+  );
+
+  useEffect(() => {
+    setIsFavorited(data?.is_favorite);
+  }, [data?.is_favorite]);
 
   useEffect(() => {
     if (!api) {
@@ -41,6 +52,20 @@ const Property = ({ userId }: { userId: string }) => {
       setCurrent(api.selectedScrollSnap() + 1);
     });
   }, [api]);
+
+  const handleToggleFavorite = () => {
+    toggleFavorite(undefined, {
+      onSuccess: (response) => {
+        setIsFavorited(response.is_favorite);
+        toast.success(
+          response.is_favorite ? "Added to favorites" : "Removed from favorites"
+        );
+      },
+      onError: () => {
+        toast.error("Failed to toggle favorite");
+      },
+    });
+  };
 
   if (isLoading) return <></>;
   if (isError) return <p>Error loading Property!</p>;
@@ -78,11 +103,23 @@ const Property = ({ userId }: { userId: string }) => {
               />
             ))}
           </div>
-          <Heart
-            className={cn(
-              "h-8 w-8 cursor-pointer absolute top-2 right-2 z-30 transition-all fill-red-500 stroke-white"
-            )}
-          />
+          {isFavorited !== null && (
+            <Heart
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (!isPending) handleToggleFavorite();
+              }}
+              className={cn(
+                "h-5 w-5 cursor-pointer absolute top-2 right-2 z-30 transition-all",
+                isFavorited ? "fill-red-500 stroke-white" : "stroke-white",
+                isPending && "opacity-50 cursor-not-allowed"
+              )}
+              aria-label={
+                isFavorited ? "Remove from favorites" : "Add to favorites"
+              }
+            />
+          )}
         </div>
         <div className="w-full col-span-3 space-y-4">
           <Link

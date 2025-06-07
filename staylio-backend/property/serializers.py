@@ -64,6 +64,7 @@ class PropertyDetailsSerializer(serializers.ModelSerializer):
             return user in obj.favorited.all()
         return None
 
+
 class ReservationListSerializer(serializers.ModelSerializer):
     property = PropertiesListSerializer(read_only=True, many=False)
 

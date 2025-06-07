@@ -45,14 +45,16 @@ export const fetchUserFavoriteProperties = async (): Promise<TProperty[]> => {
   const { data } = await api.get("/properties/user-properties", {
     headers,
     params: { is_favorites: true },
-  });  
+  });
 
   return data.data;
 };
 
-
 export const fetchPropertyDetails = async (id: string): Promise<TProperty> => {
-  const { data } = await api.get(`/properties/property/${id}`);
+  const token = await getAccessToken();
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+  const { data } = await api.get(`/properties/property/${id}`, { headers });
   if (!data) throw new Error("No property data returned");
   return data;
 };
@@ -60,7 +62,11 @@ export const fetchPropertyDetails = async (id: string): Promise<TProperty> => {
 export const fetchPropertyReservations = async (
   id: string
 ): Promise<TReservation[]> => {
-  const { data } = await api.get(`/properties/property/${id}/reservations/`);
+  const token = await getAccessToken();
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  const { data } = await api.get(`/properties/property/${id}/reservations/`, {
+    headers,
+  });
   if (!data) throw new Error("No reservations found");
   return data;
 };

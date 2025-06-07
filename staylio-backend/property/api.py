@@ -46,6 +46,8 @@ def properties_list(request):
 
 
 @api_view(["GET"])
+@authentication_classes([JWTAuthentication, SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def auth_user_properties_list(request):
     user = request.user
     is_favorites = request.GET.get("is_favorites", "")
@@ -96,8 +98,8 @@ def upload_property_image(request):
 
 
 @api_view(["GET"])
-@authentication_classes([])
-@permission_classes([])
+@authentication_classes([JWTAuthentication, SessionAuthentication, BasicAuthentication])
+@permission_classes([AllowAny])
 def property_details(request, pk):
     property = Property.objects.get(pk=pk)
 
@@ -109,13 +111,15 @@ def property_details(request, pk):
 
 
 @api_view(["GET"])
-@authentication_classes([])
-@permission_classes([])
+@authentication_classes([JWTAuthentication, SessionAuthentication, BasicAuthentication])
+@permission_classes([AllowAny])
 def property_reservations(request, pk):
     property = Property.objects.get(pk=pk)
     reservations = property.reservations.all()
 
-    serializer = ReservationListSerializer(reservations, many=True)
+    serializer = ReservationListSerializer(
+        reservations, many=True, context={"request": request}
+    )
 
     return JsonResponse(serializer.data, safe=False)
 

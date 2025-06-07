@@ -43,7 +43,7 @@ class PropertyImage(models.Model):
 class Reservation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     property = models.ForeignKey(
-        Property, related_name="reservations", on_delete=models.CASCADE
+        Property, on_delete=models.CASCADE, related_name="reservations"
     )
     start_date = models.DateField()
     end_date = models.DateField()

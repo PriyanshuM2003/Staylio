@@ -99,23 +99,24 @@ export default function PropertyCard({ data }: PropertyCardProps) {
               />
             ))}
           </div>
-
-          <Heart
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              if (!isPending) handleToggleFavorite();
-            }}
-            className={cn(
-              "h-5 w-5 cursor-pointer absolute top-2 right-2 z-30 transition-all",
-              isFavorited ? "fill-red-500 stroke-white" : "stroke-white",
-              isMyProperties && "hidden",
-              isPending && "opacity-50 cursor-not-allowed"
-            )}
-            aria-label={
-              isFavorited ? "Remove from favorites" : "Add to favorites"
-            }
-          />
+          {isFavorited !== null && (
+            <Heart
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (!isPending) handleToggleFavorite();
+              }}
+              className={cn(
+                "h-5 w-5 cursor-pointer absolute top-2 right-2 z-30 transition-all",
+                isFavorited ? "fill-red-500 stroke-white" : "stroke-white",
+                isMyProperties && "hidden",
+                isPending && "opacity-50 cursor-not-allowed"
+              )}
+              aria-label={
+                isFavorited ? "Remove from favorites" : "Add to favorites"
+              }
+            />
+          )}
         </div>
 
         <div className="space-y-1 pt-2">
