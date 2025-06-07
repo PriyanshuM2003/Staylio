@@ -15,13 +15,10 @@ import {
   fetchUserFavoriteProperties,
 } from "@/services/api";
 import { TBookPropertyPayload } from "@/types/payloads";
-import { useRefetchStore } from "@/stores/useRefetchStore";
 
 export const usePropertiesListData = (landlordId?: string) => {
-  const refetchKey = useRefetchStore((state) => state.refetchKey);
-
   return useQuery({
-    queryKey: ["properties", landlordId, refetchKey],
+    queryKey: ["properties", landlordId],
     queryFn: () => fetchProperties(landlordId),
   });
 };

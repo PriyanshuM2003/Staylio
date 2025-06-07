@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import { useLogin, useSignup } from "@/hooks/api-hooks";
 import { TLoginPayload, TSignupPayload } from "@/types/payloads";
 import { handleLogin } from "@/services/actions";
-import { useRefetchStore } from "@/stores/useRefetchStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -66,6 +66,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
 }) => {
   const signup = useSignup();
   const login = useLogin();
+  const queryClient = useQueryClient();
   const isLoading = authType === "login" ? login.isPending : signup.isPending;
 
   const formSchema = authType === "login" ? loginSchema : signupSchema;
@@ -85,8 +86,12 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
         onSuccess: (response) => {
           toast.success("Logged in successfully!");
           handleLogin(response.user.pk, response.access, response.refresh);
-          const { bumpRefetchKey } = useRefetchStore.getState();
-          bumpRefetchKey();
+          queryClient.invalidateQueries({ queryKey: ["properties"] });
+          queryClient.invalidateQueries({ queryKey: ["user-properties"] });
+          queryClient.invalidateQueries({
+            queryKey: ["user-favorite-properties"],
+          });
+          queryClient.invalidateQueries({ queryKey: ["user-reservations"] });
           setOpenAuthDialog(false);
         },
         // eslint-disable-next-line
@@ -101,8 +106,12 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
         onSuccess: (response) => {
           toast.success("Account created successfully!");
           handleLogin(response.user.pk, response.access, response.refresh);
-          const { bumpRefetchKey } = useRefetchStore.getState();
-          bumpRefetchKey();
+          queryClient.invalidateQueries({ queryKey: ["properties"] });
+          queryClient.invalidateQueries({ queryKey: ["user-properties"] });
+          queryClient.invalidateQueries({
+            queryKey: ["user-favorite-properties"],
+          });
+          queryClient.invalidateQueries({ queryKey: ["user-reservations"] });
           setOpenAuthDialog(false);
         },
         // eslint-disable-next-line
