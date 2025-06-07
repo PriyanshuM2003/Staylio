@@ -1,10 +1,19 @@
 import React from "react";
 import Properties from "@/components/pages/Properties";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
-export default function Home() {
+export default async function Home() {
+  const queryClient = new QueryClient();
+
   return (
-    <div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <Properties />
-    </div>
+    </HydrationBoundary>
   );
 }
+
+export const dynamic = "force-dynamic";

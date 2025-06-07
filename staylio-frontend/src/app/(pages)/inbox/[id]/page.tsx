@@ -1,12 +1,17 @@
-import React from "react";
 import Converstation from "@/components/pages/Converstation";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
-const page = () => {
+export default async function page({ params }: { params: { id: string } }) {
+  const queryClient = new QueryClient();
   return (
-    <div>
-      <Converstation />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Converstation id={params.id} />
+    </HydrationBoundary>
   );
-};
+}
 
-export default page;
+export const dynamic = "force-dynamic";

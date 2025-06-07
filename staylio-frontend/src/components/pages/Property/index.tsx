@@ -18,19 +18,15 @@ import Link from "next/link";
 import DescriptionDialog from "./DescriptionDialog";
 import PlaceOffersDialog from "./PlaceOffersDialog";
 import { usePropertyDetails } from "@/hooks/api-hooks";
-import { useParams } from "next/navigation";
 import BookingCard from "./BookingCard";
 
-const Property = () => {
-  const params = useParams();
+const Property = ({ id, userId }: { id: string; userId: string }) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [openDescriptionDialog, setOpenDescriptionDialog] = useState(false);
   const [openPlaceOffersDialog, setOpenPlaceOffersDialog] = useState(false);
 
-  const id = params.id as string;
-
-  const { data, isLoading } = usePropertyDetails(id);
+  const { data, isLoading, isError } = usePropertyDetails(id);
 
   useEffect(() => {
     if (!api) {
@@ -45,6 +41,7 @@ const Property = () => {
   }, [api]);
 
   if (isLoading) return <></>;
+  if (isError) return <p>Error loading Property!</p>;
 
   return (
     <div className="px-6 mx-auto">
@@ -185,7 +182,7 @@ const Property = () => {
                 </div>
               </div>
             </div>
-            <BookingCard data={data!} />
+            <BookingCard data={data!} userId={userId} />
           </div>
         </div>
       </div>

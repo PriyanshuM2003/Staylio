@@ -1,12 +1,19 @@
 import AddProperty from "@/components/pages/AddProperty";
 import React from "react";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
-const page = () => {
+export default async function page() {
+  const queryClient = new QueryClient();
+  
   return (
-    <div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <AddProperty />
-    </div>
+    </HydrationBoundary>
   );
-};
+}
 
-export default page;
+export const dynamic = "force-dynamic";

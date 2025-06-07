@@ -1,12 +1,18 @@
-import React from "react";
 import MyReservations from "@/components/pages/MyReservations";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
-const page = () => {
+export default async function page() {
+  const queryClient = new QueryClient();
+
   return (
-    <div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <MyReservations />
-    </div>
+    </HydrationBoundary>
   );
-};
+}
 
-export default page;
+export const dynamic = "force-dynamic";

@@ -1,12 +1,20 @@
 import InboxPage from "@/components/pages/InboxLayout/InboxPage";
-import React from "react";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
-const page = () => {
+export default async function page() {
+  const queryClient = new QueryClient();
+  
   return (
-    <div className="max-md:hidden">
-      <InboxPage />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="max-md:hidden">
+        <InboxPage />
+      </div>
+    </HydrationBoundary>
   );
-};
+}
 
-export default page;
+export const dynamic = "force-dynamic";

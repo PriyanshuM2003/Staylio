@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import { useLogin, useSignup } from "@/hooks/api-hooks";
 import { TLoginPayload, TSignupPayload } from "@/types/payloads";
 import { handleLogin } from "@/services/actions";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useRefetchStore } from "@/stores/useRefetchStore";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -66,6 +66,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
 }) => {
   const signup = useSignup();
   const login = useLogin();
+  const isLoading = authType === "login" ? login.isPending : signup.isPending;
 
   const formSchema = authType === "login" ? loginSchema : signupSchema;
 
@@ -84,8 +85,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
         onSuccess: (response) => {
           toast.success("Logged in successfully!");
           handleLogin(response.user.pk, response.access, response.refresh);
-          const { refreshUserId, bumpRefetchKey } = useAuthStore.getState();
-          refreshUserId();
+          const { bumpRefetchKey } = useRefetchStore.getState();
           bumpRefetchKey();
           setOpenAuthDialog(false);
         },
@@ -101,8 +101,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
         onSuccess: (response) => {
           toast.success("Account created successfully!");
           handleLogin(response.user.pk, response.access, response.refresh);
-          const { refreshUserId, bumpRefetchKey } = useAuthStore.getState();
-          refreshUserId();
+          const { bumpRefetchKey } = useRefetchStore.getState();
           bumpRefetchKey();
           setOpenAuthDialog(false);
         },
@@ -115,6 +114,13 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
         },
       });
     }
+  }
+
+  let buttonText = "";
+  if (isLoading) {
+    buttonText = authType === "login" ? "Logging in..." : "Creating account...";
+  } else {
+    buttonText = authType === "login" ? "Login" : "Create Account";
   }
 
   return (
@@ -199,8 +205,9 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
             <Button
               type="submit"
               className="w-full bg-red-500 hover:bg-red-600"
+              disabled={isLoading}
             >
-              {authType === "login" ? "Login" : "Create Account"}
+              {buttonText}
             </Button>
 
             {authType === "login" ? (

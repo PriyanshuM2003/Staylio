@@ -4,18 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 import { useLandlord, usePropertiesListData } from "@/hooks/api-hooks";
-import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useAuthStore } from "@/stores/useAuthStore";
 import AuthDialog from "@/components/common/AuthDialog";
 import PropertyCard from "@/components/common/PropertyCard";
 import PropertyCardSkeleton from "@/components/common/skeletons/PropertyCardSkeleton";
 import LandlordCardSkeleton from "@/components/common/skeletons/LandlordCardSkeleton";
 
-const Landlord = () => {
-  const params = useParams();
-  const id = params.id as string;
-  const userId = useAuthStore((state) => state.userId);
+const Landlord = ({ id, userId }: { id: string; userId: string }) => {
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<"login" | "signup">("login");
   const { data, isLoading, isError } = useLandlord(id);
