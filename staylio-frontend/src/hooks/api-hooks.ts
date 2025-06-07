@@ -11,6 +11,8 @@ import {
   bookProperty,
   fetchUserProperties,
   fetchUserReservations,
+  toggleFavoriteProperty,
+  fetchUserFavoriteProperties,
 } from "@/services/api";
 import { TBookPropertyPayload } from "@/types/payloads";
 import { useRefetchStore } from "@/stores/useRefetchStore";
@@ -49,7 +51,7 @@ export const useLandlord = (id: string) =>
     queryKey: ["landlord", id],
     queryFn: () => fetchLandlord(id),
   });
-  
+
 export const useUserReservations = () =>
   useQuery({
     queryKey: ["user-reservations"],
@@ -93,3 +95,25 @@ export const useBookProperty = (id: string) => {
     },
   });
 };
+
+export const useToggleFavorite = (propertyId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["toggle_favorite", propertyId],
+    mutationFn: () => toggleFavoriteProperty(propertyId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["properties"] });
+      queryClient.invalidateQueries({ queryKey: ["user-properties"] });
+      queryClient.invalidateQueries({
+        queryKey: ["property_details", propertyId],
+      });
+    },
+  });
+};
+
+export const useUserFavoriteProperties = () =>
+  useQuery({
+    queryKey: ["user-favorite-properties"],
+    queryFn: fetchUserFavoriteProperties,
+  });

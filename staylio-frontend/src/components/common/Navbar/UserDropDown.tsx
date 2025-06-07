@@ -11,12 +11,12 @@ import { User } from "lucide-react";
 import Link from "next/link";
 import AuthDialog from "../AuthDialog";
 import { resetAuthCookies } from "@/services/actions";
-import { useRefetchStore } from "@/stores/useRefetchStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 const UserDropDown = ({ userId }: { userId: string }) => {
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<"login" | "signup">("login");
-  const bumpRefetchKey = useRefetchStore((state) => state.bumpRefetchKey);
+  const queryClient = useQueryClient();
 
   const handleSignUpAuth = () => {
     setAuthType("signup");
@@ -30,7 +30,7 @@ const UserDropDown = ({ userId }: { userId: string }) => {
 
   const handleLogout = async () => {
     await resetAuthCookies();
-    bumpRefetchKey();
+    queryClient.clear();
   };
 
   return (

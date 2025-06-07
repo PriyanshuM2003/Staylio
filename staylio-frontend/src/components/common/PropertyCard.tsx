@@ -15,6 +15,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useToggleFavorite } from "@/hooks/api-hooks";
+import { toast } from "sonner";
 
 interface PropertyCardProps {
   data: TProperty;
@@ -26,6 +28,13 @@ export default function PropertyCard({ data }: PropertyCardProps) {
   const [current, setCurrent] = useState(0);
   const pathName = usePathname();
   const isMyProperties = pathName.includes("my-properties");
+  const [isFavorited, setIsFavorited] = useState(data.is_favorite);
+
+  const { mutate: toggleFavorite, isPending } = useToggleFavorite(data.id);
+
+  useEffect(() => {
+    setIsFavorited(data.is_favorite);
+  }, [data.is_favorite]);
 
   useEffect(() => {
     if (!api) {
@@ -38,6 +47,20 @@ export default function PropertyCard({ data }: PropertyCardProps) {
       setCurrent(api.selectedScrollSnap() + 1);
     });
   }, [api]);
+
+  const handleToggleFavorite = () => {
+    toggleFavorite(undefined, {
+      onSuccess: (response) => {
+        setIsFavorited(response.is_favorite);
+        toast.success(
+          response.is_favorite ? "Added to favorites" : "Removed from favorites"
+        );
+      },
+      onError: () => {
+        toast.error("Failed to toggle favorite");
+      },
+    });
+  };
 
   return (
     <Card className="border-0 p-0 shadow-none hover:shadow-2xl relative transition-all rounded-xl">
@@ -78,12 +101,20 @@ export default function PropertyCard({ data }: PropertyCardProps) {
           </div>
 
           <Heart
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              if (!isPending) handleToggleFavorite();
+            }}
             className={cn(
               "h-5 w-5 cursor-pointer absolute top-2 right-2 z-30 transition-all",
-              // data.isFavorite ? "fill-red-500 stroke-white" : "stroke-white",
-              "stroke-white",
-              isMyProperties && "hidden"
+              isFavorited ? "fill-red-500 stroke-white" : "stroke-white",
+              isMyProperties && "hidden",
+              isPending && "opacity-50 cursor-not-allowed"
             )}
+            aria-label={
+              isFavorited ? "Remove from favorites" : "Add to favorites"
+            }
           />
         </div>
 

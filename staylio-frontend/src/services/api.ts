@@ -36,6 +36,21 @@ export const fetchUserProperties = async (): Promise<TProperty[]> => {
   return data.data;
 };
 
+export const fetchUserFavoriteProperties = async (): Promise<TProperty[]> => {
+  const token = await getAccessToken();
+  if (!token) throw new Error("User is not authenticated");
+
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const { data } = await api.get("/properties/user-properties", {
+    headers,
+    params: { is_favorites: true },
+  });
+
+  return data.data;
+};
+
+
 export const fetchPropertyDetails = async (id: string): Promise<TProperty> => {
   const { data } = await api.get(`/properties/property/${id}`);
   if (!data) throw new Error("No property data returned");
@@ -149,6 +164,23 @@ export const bookProperty = async (
         Authorization: token ? `Bearer ${token}` : "",
       },
     }
+  );
+
+  return data;
+};
+
+export const toggleFavoriteProperty = async (
+  id: string
+): Promise<{ is_favorite: boolean }> => {
+  const token = await getAccessToken();
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  const { data } = await api.post(
+    `/properties/property/${id}/toggle_favorite/`,
+    {},
+    { headers }
   );
 
   return data;

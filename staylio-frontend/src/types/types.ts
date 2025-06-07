@@ -28,6 +28,7 @@ export type TProperty = {
   guests: number;
   country: string;
   state: string;
+  is_favorite: boolean | null;
   category: string;
   landlord: TUser;
   created_at: string;

@@ -15,7 +15,7 @@ class Property(models.Model):
     country = models.CharField(max_length=255)
     state = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
-    # favor
+    favorited = models.ManyToManyField(User, related_name="favorites", blank=True)
     landlord = models.ForeignKey(
         User, related_name="properties", on_delete=models.CASCADE
     )
