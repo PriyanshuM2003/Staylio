@@ -1,7 +1,7 @@
 "use server";
 import { api } from "@/lib/axios";
 import { getAccessToken } from "@/services/actions";
-import { TProperty, TReservation, TUser } from "@/types/types";
+import { TConveration, TProperty, TReservation, TUser } from "@/types/types";
 import {
   TBookPropertyPayload,
   TCreatePropertyPayload,
@@ -190,4 +190,13 @@ export const toggleFavoriteProperty = async (
   );
 
   return data;
+};
+
+export const fetchConversations = async (): Promise<TConveration[]> => {
+  const token = await getAccessToken();
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const { data } = await api.get(`/chat/`, { headers });
+  if (!data) throw new Error("No converations returned");
+  return data.data;
 };

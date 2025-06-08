@@ -13,6 +13,7 @@ import {
   fetchUserReservations,
   toggleFavoriteProperty,
   fetchUserFavoriteProperties,
+  fetchConversations,
 } from "@/services/api";
 import { TBookPropertyPayload } from "@/types/payloads";
 
@@ -53,6 +54,11 @@ export const useUserReservations = () =>
   useQuery({
     queryKey: ["user-reservations"],
     queryFn: () => fetchUserReservations(),
+  });
+export const useConversations = () =>
+  useQuery({
+    queryKey: ["conversations"],
+    queryFn: () => fetchConversations(),
   });
 
 export const useSignup = () =>

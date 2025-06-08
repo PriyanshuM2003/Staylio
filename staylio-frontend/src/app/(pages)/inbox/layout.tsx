@@ -1,4 +1,5 @@
 import InboxSidebar from "@/components/pages/InboxLayout/InboxSidebar";
+import { getUserId } from "@/services/actions";
 import {
   dehydrate,
   HydrationBoundary,
@@ -12,10 +13,12 @@ export default async function ChatLayout({
 }) {
   const queryClient = new QueryClient();
 
+  const userId = await getUserId();
+
   return (
     <div className="flex h-[80vh]">
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <InboxSidebar />
+        <InboxSidebar userId={userId!} />
       </HydrationBoundary>
       <div className="flex-1 w-full h-full">{children}</div>
     </div>

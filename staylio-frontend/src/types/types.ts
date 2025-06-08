@@ -52,3 +52,8 @@ export type TInbox = {
   teaser: string;
   isRead?: boolean;
 };
+
+export type TConveration = {
+  id: string;
+  users: TUser[];
+};

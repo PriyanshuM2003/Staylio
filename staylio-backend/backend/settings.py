@@ -35,7 +35,7 @@ SIMPLE_JWT = {
 
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
-ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = "username"
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
 REST_FRAMEWORK = {
@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "corsheaders",
     "property",
+    "chat",
     "user",
     "drf_yasg",
 ]

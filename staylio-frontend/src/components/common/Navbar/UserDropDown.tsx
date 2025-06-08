@@ -52,6 +52,10 @@ const UserDropDown = ({ userId }: { userId: string }) => {
                 <Link href={"/my-favorites"}>My Favorties</Link>
               </DropdownMenuItem>
               <Separator />
+              <DropdownMenuItem asChild>
+                <Link href={"/inbox"}>Inbox</Link>
+              </DropdownMenuItem>
+              <Separator />
               <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </>
           ) : (
