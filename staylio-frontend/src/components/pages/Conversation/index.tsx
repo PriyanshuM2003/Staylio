@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useConversationsDetail } from "@/hooks/api-hooks";
+import { cn } from "@/lib/utils";
 import { TMessage } from "@/types/types";
 import { ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -16,11 +17,12 @@ import useWebSocket from "react-use-websocket";
 
 const MessageBubble = React.memo(
   ({ message, isMyMessage }: { message: TMessage; isMyMessage: boolean }) => (
-    <div className={`flex ${isMyMessage ? "justify-end" : "justify-start"}`}>
+    <div className={cn("flex", isMyMessage ? "justify-end" : "justify-start")}>
       <div
-        className={`p-3 rounded-2xl max-w-[70%] ${
+        className={cn(
+          "p-3 rounded-2xl max-w-[70%]",
           isMyMessage ? "bg-destructive text-white" : "bg-white text-black"
-        }`}
+        )}
       >
         <p className="font-bold text-xs">
           {isMyMessage ? "You" : message.created_by?.username || message.name}
@@ -89,7 +91,7 @@ const Conversation = ({ userId, token }: { userId: string; token: string }) => {
     const senderIsMe = lastJsonMessage.name === myUser?.username;
 
     const message: TMessage = {
-      id: `realtime-${Date.now()}`, // Better ID generation
+      id: `realtime-${Date.now()}`,
       name: lastJsonMessage.name as string,
       body: lastJsonMessage.body as string,
       sent_to: senderIsMe ? otherUser! : myUser!,
@@ -163,7 +165,6 @@ const Conversation = ({ userId, token }: { userId: string; token: string }) => {
   return (
     <div className="rounded-r-2xl h-[80vh] p-4 border border-l-0 w-full">
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between gap-4">
           <ArrowLeft
             className="cursor-pointer hover:opacity-70 transition-opacity"
@@ -172,9 +173,7 @@ const Conversation = ({ userId, token }: { userId: string; token: string }) => {
           <h3 className="text-lg font-medium">
             {otherUser?.username || "Unknown User"}
           </h3>
-          <h4 className="text-muted-foreground text-sm">
-            {readyState === 1 ? "Online" : "Offline"}
-          </h4>
+          <div></div>
         </div>
 
         <div
