@@ -1,4 +1,4 @@
-import Converstation from "@/components/pages/Converstation";
+import Conversation from "@/components/pages/Conversation";
 import {
   dehydrate,
   HydrationBoundary,
@@ -9,7 +9,7 @@ export default async function page() {
   const queryClient = new QueryClient();
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Converstation />
+      <Conversation />
     </HydrationBoundary>
   );
 }

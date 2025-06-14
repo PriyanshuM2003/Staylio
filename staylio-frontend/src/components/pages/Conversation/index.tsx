@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const Converstation = () => {
+const Conversation = () => {
   const router = useRouter();
   return (
     <div className="rounded-r-2xl h-[80vh] p-4 border border-l-0 w-full">
@@ -45,4 +45,4 @@ const Converstation = () => {
   );
 };
 
-export default Converstation;
+export default Conversation;

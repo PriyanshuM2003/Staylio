@@ -30,7 +30,7 @@ const InboxSidebar = ({ userId }: { userId: string }) => {
             const otherUser = inbox.users.find((user) => user.id != userId);
             return (
               <Link
-                href={`/inbox/${inbox.id}`}
+                href={`/inbox/conversation/${inbox.id}`}
                 key={inbox.id}
                 className="flex flex-col items-start gap-2 whitespace-nowrap border-b p-4 text-sm leading-tight last:border-b-0 hover:bg-white"
               >

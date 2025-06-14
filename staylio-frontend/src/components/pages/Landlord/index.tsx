@@ -35,7 +35,7 @@ const Landlord = ({ userId }: { userId: string }) => {
     createConversationMutation.mutate(params.id as string, {
       onSuccess: (conversation) => {
         toast.success("Conversation created successfully!");
-        router.push(`/inbox/${conversation.id}`);
+        router.push(`/inbox/conversation/${conversation.id}`);
       },
       onError: (error) => {
         console.error("Failed to create conversation:", error);
