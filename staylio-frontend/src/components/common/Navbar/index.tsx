@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Button } from "../../ui/button";
 import UserDropDown from "./UserDropDown";
 import { getUserId } from "@/services/actions";
-import { ThemeToggle } from "./ThemeToggle";
 
 const Navbar = async () => {
   const userId = await getUserId();
@@ -25,7 +24,6 @@ const Navbar = async () => {
             </Button>
           )}
           <UserDropDown userId={userId!} />
-          <ThemeToggle />
         </div>
       </nav>
     </div>
