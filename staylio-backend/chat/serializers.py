@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Converstaion, ConversationMessage
+from .models import Conversation, ConversationMessage
 from user.serializers import UserDetailSerializer
 from user.models import User
 
@@ -9,7 +9,7 @@ class ConversationListSerializer(serializers.ModelSerializer):
     users = UserDetailSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Converstaion
+        model = Conversation
         fields = ("id", "users", "modified_at")
 
 
@@ -19,12 +19,12 @@ class ConversationCreateSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = Converstaion
+        model = Conversation
         fields = ("user_id",)
 
     def create(self, validated_data):
         validated_data.pop("user_id")
-        conversation = Converstaion.objects.create()
+        conversation = Conversation.objects.create()
         return conversation
 
     def validate_user_id(self, value):
@@ -34,3 +34,11 @@ class ConversationCreateSerializer(serializers.ModelSerializer):
             return value
         except User.DoesNotExist:
             raise serializers.ValidationError("User with this ID does not exist")
+
+
+class ConversationDetailSerializer(serializers.ModelSerializer):
+    users = UserDetailSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Conversation
+        fields = ("id", "users", "modified_at")

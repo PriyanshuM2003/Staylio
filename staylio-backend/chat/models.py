@@ -4,7 +4,7 @@ from django.db import models
 from user.models import User
 
 
-class Converstaion(models.Model):
+class Conversation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     users = models.ManyToManyField(User, related_name="conversations")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -14,7 +14,7 @@ class Converstaion(models.Model):
 class ConversationMessage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     conversation = models.ForeignKey(
-        Converstaion, related_name="messages", on_delete=models.CASCADE
+        Conversation, related_name="messages", on_delete=models.CASCADE
     )
     body = models.TextField()
     sent_to = models.ForeignKey(
