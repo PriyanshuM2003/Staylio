@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from .models import Conversation
 from .serializers import (
     ConversationListSerializer,
-    ConversationCreateSerializer,
     ConversationDetailSerializer,
+    ConversationMessageSerializer,
 )
 from user.models import User
 
@@ -18,31 +18,38 @@ def conversations_list(request):
     return JsonResponse(serializer.data, safe=False)
 
 
-@api_view(["POST"])
-def conversations_create(request):
-    serializer = ConversationCreateSerializer(data=request.data)
+@api_view(["GET"])
+def conversations_detail(request, pk):
+    conversation = request.user.conversations.get(pk=pk)
 
-    if serializer.is_valid():
-        conversation = serializer.save()
+    conversation_serializer = ConversationDetailSerializer(conversation, many=False)
+    messages_serializer = ConversationMessageSerializer(
+        conversation.messages.all(), many=True
+    )
 
-        user_id = serializer.validated_data["user_id"]
-        try:
-            target_user = User.objects.get(id=user_id)
-            conversation.users.add(request.user, target_user)
-        except User.DoesNotExist:
-            return Response(
-                {"error": "User with this ID does not exist"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        response_serializer = ConversationListSerializer(conversation)
-        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(
+        {
+            "conversation": conversation_serializer.data,
+            "messages": messages_serializer.data,
+        },
+        safe=False,
+    )
 
 
 @api_view(["GET"])
-def conversation_detail(request, pk):
-    conversation = request.user.conversations.get(pk=pk)
-    convesation_serializer = ConversationDetailSerializer(conversation, many=False)
-    return JsonResponse({"conversation": convesation_serializer.data}, safe=False)
+def conversations_start(request, user_id):
+    conversations = Conversation.objects.filter(users__in=[user_id]).filter(
+        users__in=[request.user.id]
+    )
+
+    if conversations.count() > 0:
+        conversation = conversations.first()
+
+        return JsonResponse({"success": True, "conversation_id": conversation.id})
+    else:
+        user = User.objects.get(pk=user_id)
+        conversation = Conversation.objects.create()
+        conversation.users.add(request.user)
+        conversation.users.add(user)
+
+        return JsonResponse({"success": True, "conversation_id": conversation.id})
