@@ -197,6 +197,20 @@ export const fetchConversations = async (): Promise<TConveration[]> => {
   const headers = { Authorization: `Bearer ${token}` };
 
   const { data } = await api.get(`/chat/`, { headers });
-  if (!data) throw new Error("No converations returned");
-  return data.data;
+  if (!data) throw new Error("No converations returned");  
+  return data;
+};
+
+
+export const createConversation = async (userId: string): Promise<TConveration> => {
+  const token = await getAccessToken();
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const { data } = await api.post("/chat/create/", 
+    { user_id: userId }, 
+    { headers }
+  );
+
+  if (!data) throw new Error("Failed to create conversation");
+  return data;
 };

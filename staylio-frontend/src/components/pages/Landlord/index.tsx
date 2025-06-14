@@ -3,16 +3,22 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
-import { useLandlord, usePropertiesListData } from "@/hooks/api-hooks";
+import {
+  useCreateConversation,
+  useLandlord,
+  usePropertiesListData,
+} from "@/hooks/api-hooks";
 import { Button } from "@/components/ui/button";
 import AuthDialog from "@/components/common/AuthDialog";
 import PropertyCard from "@/components/common/PropertyCard";
 import PropertyCardSkeleton from "@/components/common/skeletons/PropertyCardSkeleton";
 import LandlordCardSkeleton from "@/components/common/skeletons/LandlordCardSkeleton";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Landlord = ({ userId }: { userId: string }) => {
   const params = useParams();
+  const router = useRouter();
   const [openAuthDialog, setOpenAuthDialog] = useState(false);
   const [authType, setAuthType] = useState<"login" | "signup">("login");
   const { data, isLoading, isError } = useLandlord(params.id as string);
@@ -21,6 +27,22 @@ const Landlord = ({ userId }: { userId: string }) => {
     isLoading: loadingPropertyData,
     isError: errorPropertyData,
   } = usePropertiesListData(params.id as string);
+  const createConversationMutation = useCreateConversation();
+
+  const handleCreateConversation = () => {
+    if (!params.id || !userId) return;
+
+    createConversationMutation.mutate(params.id as string, {
+      onSuccess: (conversation) => {
+        toast.success("Conversation created successfully!");
+        router.push(`/inbox/${conversation.id}`);
+      },
+      onError: (error) => {
+        console.error("Failed to create conversation:", error);
+        toast.error("Failed to create conversation. Please try again.");
+      },
+    });
+  };
 
   return (
     <div className="grid gap-6 grid-cols-4">
@@ -85,7 +107,15 @@ const Landlord = ({ userId }: { userId: string }) => {
                     Login to contact
                   </Button>
                 ) : (
-                  <Button variant={"destructive"}>Contact</Button>
+                  <Button
+                    variant={"destructive"}
+                    onClick={handleCreateConversation}
+                    disabled={createConversationMutation.isPending}
+                  >
+                    {createConversationMutation.isPending
+                      ? "Creating..."
+                      : "Contact"}
+                  </Button>
                 )}
               </CardContent>
             </Card>

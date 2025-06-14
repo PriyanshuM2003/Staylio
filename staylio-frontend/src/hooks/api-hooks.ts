@@ -14,6 +14,7 @@ import {
   toggleFavoriteProperty,
   fetchUserFavoriteProperties,
   fetchConversations,
+  createConversation,
 } from "@/services/api";
 import { TBookPropertyPayload } from "@/types/payloads";
 
@@ -60,6 +61,20 @@ export const useConversations = () =>
     queryKey: ["conversations"],
     queryFn: () => fetchConversations(),
   });
+
+export const useCreateConversation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["create_conversation"],
+    mutationFn: (userId: string) => createConversation(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+    },
+  });
+};
 
 export const useSignup = () =>
   useMutation({
