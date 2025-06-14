@@ -1,7 +1,13 @@
 "use server";
 import { api } from "@/lib/axios";
 import { getAccessToken } from "@/services/actions";
-import { TConveration, TProperty, TReservation, TUser } from "@/types/types";
+import {
+  TConveration,
+  TMessage,
+  TProperty,
+  TReservation,
+  TUser,
+} from "@/types/types";
 import {
   TBookPropertyPayload,
   TCreatePropertyPayload,
@@ -201,30 +207,30 @@ export const fetchConversations = async (): Promise<TConveration[]> => {
   return data;
 };
 
-export const createConversation = async (
-  userId: string
-): Promise<TConveration> => {
-  const token = await getAccessToken();
-  const headers = { Authorization: `Bearer ${token}` };
-
-  const { data } = await api.post(
-    "/chat/create/",
-    { user_id: userId },
-    { headers }
-  );
-
-  if (!data) throw new Error("Failed to create conversation");
-  return data;
-};
-
-export const fetchConversationDetail = async (
+export const fetchConversationsDetail = async (
   id: string
-): Promise<TConveration> => {
+): Promise<{ conversation: TConveration; messages: TMessage[] }> => {
   const token = await getAccessToken();
   const headers = { Authorization: `Bearer ${token}` };
 
   const { data } = await api.get(`/chat/${id}/`, { headers });
   if (!data) throw new Error("No conversation detail returned");
 
-  return data.conversation;
+  return {
+    conversation: data.conversation,
+    messages: data.messages || [],
+  };
+};
+export const startConversation = async (
+  userId: string
+): Promise<{ success: boolean; conversation_id: string }> => {
+  const token = await getAccessToken();
+  if (!token) throw new Error("User is not authenticated");
+
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const { data } = await api.get(`/chat/start/${userId}/`, { headers });
+  if (!data?.success) throw new Error("Failed to start conversation");
+
+  return data;
 };

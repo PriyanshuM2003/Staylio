@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 import {
-  useCreateConversation,
+  useStartConversation,
   useLandlord,
   usePropertiesListData,
 } from "@/hooks/api-hooks";
@@ -27,21 +27,22 @@ const Landlord = ({ userId }: { userId: string }) => {
     isLoading: loadingPropertyData,
     isError: errorPropertyData,
   } = usePropertiesListData(params.id as string);
-  const createConversationMutation = useCreateConversation();
 
-  const handleCreateConversation = () => {
+  const startConversationQuery = useStartConversation(params.id as string);
+
+  const handleCreateConversation = async () => {
     if (!params.id || !userId) return;
 
-    createConversationMutation.mutate(params.id as string, {
-      onSuccess: (conversation) => {
-        toast.success("Conversation created successfully!");
-        router.push(`/inbox/conversation/${conversation.id}`);
-      },
-      onError: (error) => {
-        console.error("Failed to create conversation:", error);
-        toast.error("Failed to create conversation. Please try again.");
-      },
-    });
+    try {
+      const data = await startConversationQuery.refetch();
+      if (data.data) {
+        toast.success("Conversation started successfully!");
+        router.push(`/inbox/conversation/${data.data.conversation_id}`);
+      }
+    } catch (error) {
+      console.error("Failed to start conversation:", error);
+      toast.error("Failed to start conversation. Please try again.");
+    }
   };
 
   return (
@@ -110,9 +111,9 @@ const Landlord = ({ userId }: { userId: string }) => {
                   <Button
                     variant={"destructive"}
                     onClick={handleCreateConversation}
-                    disabled={createConversationMutation.isPending}
+                    disabled={startConversationQuery.isFetching}
                   >
-                    {createConversationMutation.isPending
+                    {startConversationQuery.isFetching
                       ? "Creating..."
                       : "Contact"}
                   </Button>

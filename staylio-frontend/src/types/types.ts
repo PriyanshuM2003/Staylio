@@ -57,3 +57,12 @@ export type TConveration = {
   id: string;
   users: TUser[];
 };
+
+export type TMessage = {
+  id: string;
+  name: string;
+  body: string;
+  conversationId: string;
+  sent_to: TUser;
+  created_by: TUser;
+};

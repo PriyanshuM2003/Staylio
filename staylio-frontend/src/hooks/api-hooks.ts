@@ -14,8 +14,8 @@ import {
   toggleFavoriteProperty,
   fetchUserFavoriteProperties,
   fetchConversations,
-  createConversation,
-  fetchConversationDetail,
+  startConversation,
+  fetchConversationsDetail,
 } from "@/services/api";
 import { TBookPropertyPayload } from "@/types/payloads";
 
@@ -63,19 +63,30 @@ export const useConversations = () =>
     queryFn: () => fetchConversations(),
   });
 
-export const useCreateConversation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["create_conversation"],
-    mutationFn: (userId: string) => createConversation(userId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["conversations"],
-      });
-    },
+export const useStartConversation = (userId: string) => {
+  return useQuery({
+    queryKey: ["start_conversation", userId],
+    queryFn: () => startConversation(userId),
+    enabled: false,
   });
 };
+
+export const useConversationsDetail = (id: string) =>
+  useQuery({
+    queryKey: ["conversation_detail", id],
+    queryFn: () => fetchConversationsDetail(id),
+    enabled: !!id,
+    select: (data) => ({
+      conversation: data.conversation,
+      messages: data.messages,
+    }),
+  });
+
+export const useUserFavoriteProperties = () =>
+  useQuery({
+    queryKey: ["user-favorite-properties"],
+    queryFn: fetchUserFavoriteProperties,
+  });
 
 export const useSignup = () =>
   useMutation({
@@ -131,16 +142,3 @@ export const useToggleFavorite = (propertyId: string) => {
     },
   });
 };
-
-export const useUserFavoriteProperties = () =>
-  useQuery({
-    queryKey: ["user-favorite-properties"],
-    queryFn: fetchUserFavoriteProperties,
-  });
-
-export const useConversationDetail = (id: string) =>
-  useQuery({
-    queryKey: ["conversation_detail", id],
-    queryFn: () => fetchConversationDetail(id),
-    enabled: !!id,
-  });
