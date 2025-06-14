@@ -1,12 +1,32 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useConversationDetail } from "@/hooks/api-hooks";
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 
-const Conversation = () => {
+const Conversation = ({ userId, token }: { userId: string; token: string }) => {
   const router = useRouter();
+  const params = useParams();
+
+  const { data, isLoading, isError } = useConversationDetail(
+    params.id as string
+  );
+
+  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
+    `ws://127.0.0.1:8000/ws/${data?.id}/?token=${token}`,
+    {
+      share: false,
+      shouldReconnect: () => true,
+    }
+  );
+
+  useEffect(() => {
+    console.log("Connection state changed", readyState);
+  }, [readyState]);
+
   return (
     <div className="rounded-r-2xl h-[80vh] p-4 border border-l-0 w-full">
       <div className="space-y-6">

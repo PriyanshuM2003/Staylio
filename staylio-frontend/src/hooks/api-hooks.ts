@@ -15,6 +15,7 @@ import {
   fetchUserFavoriteProperties,
   fetchConversations,
   createConversation,
+  fetchConversationDetail,
 } from "@/services/api";
 import { TBookPropertyPayload } from "@/types/payloads";
 
@@ -135,4 +136,11 @@ export const useUserFavoriteProperties = () =>
   useQuery({
     queryKey: ["user-favorite-properties"],
     queryFn: fetchUserFavoriteProperties,
+  });
+
+export const useConversationDetail = (id: string) =>
+  useQuery({
+    queryKey: ["conversation_detail", id],
+    queryFn: () => fetchConversationDetail(id),
+    enabled: !!id,
   });
