@@ -1,10 +1,11 @@
 import InboxSidebar from "@/components/pages/InboxLayout/InboxSidebar";
-import { getUserId } from "@/services/actions";
+import { getAccessToken, getUserId } from "@/services/actions";
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
+import { redirect } from "next/navigation";
 
 export default async function ChatLayout({
   children,
@@ -14,6 +15,11 @@ export default async function ChatLayout({
   const queryClient = new QueryClient();
 
   const userId = await getUserId();
+  const token = await getAccessToken();
+
+  if (!token) {
+    redirect("/");
+  }
 
   return (
     <div className="flex h-[80vh]">
