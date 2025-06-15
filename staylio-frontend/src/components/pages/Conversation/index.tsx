@@ -58,7 +58,7 @@ const Conversation = ({ userId, token }: { userId: string; token: string }) => {
   const socketUrl = useMemo(
     () =>
       conversation?.id
-        ? `ws://127.0.0.1:8000/ws/${conversation.id}/?token=${token}`
+        ? `${process.env.NEXT_PUBLIC_ASGI_URL}/${conversation.id}/?token=${token}`
         : null,
     [conversation?.id, token]
   );
