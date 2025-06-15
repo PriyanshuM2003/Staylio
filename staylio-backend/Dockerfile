@@ -24,9 +24,3 @@ RUN chmod +x /staylio-backend/entrypoint.sh
 COPY . .
 
 ENTRYPOINT ["/staylio-backend/entrypoint.sh"]
-
-# Expose the port the app runs on
-EXPOSE 8000
-
-# Run the Django development server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
