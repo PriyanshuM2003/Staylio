@@ -1,11 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useConversationsDetail } from "@/hooks/api-hooks";
-import { cn } from "@/lib/utils";
-import { TMessage } from "@/types/types";
-import { ArrowLeft } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
 import React, {
   useCallback,
   useEffect,
@@ -13,6 +6,13 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useConversationsDetail } from "@/hooks/api-hooks";
+import { cn } from "@/lib/utils";
+import type { TMessage } from "@/types/types";
+import { ArrowLeft, Loader } from "lucide-react";
+import { redirect, useParams } from "next/navigation";
 import useWebSocket from "react-use-websocket";
 
 const MessageBubble = React.memo(
@@ -36,7 +36,6 @@ const MessageBubble = React.memo(
 MessageBubble.displayName = "MessageBubble";
 
 const Conversation = ({ userId, token }: { userId: string; token: string }) => {
-  const router = useRouter();
   const params = useParams();
   const messagesDiv = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
@@ -101,8 +100,18 @@ const Conversation = ({ userId, token }: { userId: string; token: string }) => {
 
     setRealtimeMessages((prev) => [...prev, message]);
 
-    requestAnimationFrame(scrollToBottom);
+    setTimeout(() => {
+      scrollToBottom();
+    }, 50);
   }, [lastJsonMessage, myUser, otherUser, conversation?.id, scrollToBottom]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
+    }
+  }, [messages.length, scrollToBottom]);
 
   const sendMessage = useCallback(() => {
     if (!newMessage.trim() || !conversation || !myUser || !otherUser) return;
@@ -118,7 +127,10 @@ const Conversation = ({ userId, token }: { userId: string; token: string }) => {
     });
 
     setNewMessage("");
-    requestAnimationFrame(scrollToBottom);
+
+    setTimeout(() => {
+      scrollToBottom();
+    }, 50);
   }, [
     newMessage,
     conversation,
@@ -149,7 +161,7 @@ const Conversation = ({ userId, token }: { userId: string; token: string }) => {
   if (isLoading) {
     return (
       <div className="rounded-r-2xl h-[80vh] p-4 border border-l-0 w-full flex items-center justify-center">
-        <div className="text-muted-foreground">Loading conversation...</div>
+        <Loader size={28} className="animate-spin" />
       </div>
     );
   }
@@ -168,7 +180,7 @@ const Conversation = ({ userId, token }: { userId: string; token: string }) => {
         <div className="flex items-center justify-between gap-4">
           <ArrowLeft
             className="cursor-pointer hover:opacity-70 transition-opacity"
-            onClick={() => router.push("/inbox")}
+            onClick={() => redirect("/inbox")}
           />
           <h3 className="text-lg font-medium">
             {otherUser?.username || "Unknown User"}
