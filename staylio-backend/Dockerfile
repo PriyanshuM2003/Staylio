@@ -29,4 +29,4 @@ ENTRYPOINT ["/staylio-backend/entrypoint.sh"]
 EXPOSE 8000
 
 # Run the Django development server
-CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput --clear && gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 3 backend.wsgi:application"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
