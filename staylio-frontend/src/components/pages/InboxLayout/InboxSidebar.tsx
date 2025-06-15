@@ -1,8 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { useConversations } from "@/hooks/api-hooks";
 import type { TConveration } from "@/types/types";
@@ -70,16 +68,9 @@ const InboxSidebar = ({ userId }: { userId: string }) => {
   return (
     <div className="bg-gray-100 max-md:rounded-2xl md:rounded-l-2xl overflow-y-auto scrollbar-none w-full md:w-[22rem] border">
       <div className="gap-3.5 space-y-4 border-b p-4">
-        <div className="flex w-full items-center justify-between">
-          <div className="text-base font-medium text-foreground">Inbox</div>
-          <Label className="flex items-center gap-2 text-sm">
-            <span>Unreads</span>
-            <Switch className="shadow-none" />
-          </Label>
-        </div>
+        <div className="text-base font-medium text-foreground">Inbox</div>
         <Input className="bg-white" placeholder="Type to search..." />
       </div>
-
       <div>{content}</div>
     </div>
   );
