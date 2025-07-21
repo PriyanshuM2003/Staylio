@@ -23,7 +23,7 @@ AUTH_USER_MODEL = "user.User"
 
 SITE_ID = 1
 
-WEBSITE_URL = "http://localhost:8000"
+WEBSITE_URL = os.environ.get("SITE_URL")
 
 CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 SIMPLE_JWT = {
@@ -50,6 +50,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
+    "https://staylio-93ag.onrender.com",
     "http://127.0.0.1:3000",
     "http://localhost:3000",
 ]
